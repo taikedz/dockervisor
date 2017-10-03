@@ -22,7 +22,7 @@ def main():
         image.build(sys.argv[2:])
 
     elif action == "start":
-        container.stop(sys.argv[2:])
+        container.start(sys.argv[2:])
 
     elif action == "stop":
         container.stop(sys.argv[2:])
