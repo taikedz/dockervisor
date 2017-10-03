@@ -28,6 +28,9 @@ def build_defined_image(imagename):
 def define_and_build_image(args):
     imagename = args[0]
 
+    # TODO - use imagename to seek for $imagename.cdef to get netw, port and volume mount info
+    #    JSON data
+
     if lne(args) < 2:
         print("You must specify the directory to pull build files from (usually '.')")
         sys.exit(1)
@@ -37,7 +40,9 @@ def define_and_build_image(args):
     if do_build(imagename, build_path)
         store.register_image( imagename, os.path.realpath("."), build_path )
 
-
+def new_container(imagename):
+    # use docker run with volume mounts, network definitions and port exposures
+    pass
 
 def do_build(imagename, build_path):
     print("Building [%s] at [%s] taking files from [%s]" % (imagename, os.path.realpath("."), build_path))

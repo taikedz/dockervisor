@@ -1,5 +1,6 @@
 from dockervisor import commmon
 from dockervisor import store
+from dockervisor import image
 
 def start(args):
     if len(args) == 2:
