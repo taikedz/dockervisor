@@ -35,7 +35,7 @@ def define_and_build_image(args):
     build_path = args[1]
 
     if do_build(imagename, build_path)
-        store.register( imagename, os.path.realpath("."), build_path )
+        store.register_image( imagename, os.path.realpath("."), build_path )
 
 
 
