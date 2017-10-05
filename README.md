@@ -2,6 +2,9 @@
 
 A tool for managing Docker images, containers, and rollback.
 
+(incomplete)
+(I thikn I waterfalled it and went down a rabbit hole...)
+
 ## Usage
 
 Dockervisor is intended to be used on Dockerfiles.
@@ -42,11 +45,11 @@ Start a container by name:
 
 You can mark the currently running container as "stable", to indicate that it should be the fallback version
 
-	dockervisor stable mark
+	dockervisor stable mark imagename
 
 You can see which container is marked as stable
 
-	dockervisor stable show
+	dockervisor stable show imagename
 
 The `:stable` label always points to the same container until explicitly changed.
 
@@ -59,6 +62,8 @@ Simply run the build command against the image name
 Running `:latest` will still run the previously existing container, we must create a new container which becomes the new latest.
 
 	dockervisor start myapp :new
+
+[preimplementation note: this needs more management than initially thought, since we cannot simply replace an image with one of the same name]
 
 ### Rollback
 
