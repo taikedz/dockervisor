@@ -2,6 +2,21 @@ import os
 import sys
 import pathlib
 
+# Store dir structure -------------------------
+# a folder for volumes, and a folder for images
+#
+# volumes folder:
+# (considering tracking which containers volumes have been attached to)
+#
+# images folder:
+# each image should have a corresponding folder
+# each folder should have a file "image-meta" stating
+#   * workdir
+#   * build_path
+#   * stable, last and latest container names
+# each folder should have a "containers" file containing
+#   * a list of the containers created from the image
+
 homedir = pathlib.Path.home()
 a_store_dir = [homedir, ".config", "dockervisor"]
 a_images_dir = a_store_dir + ["images"]
@@ -43,21 +58,6 @@ def read_file_def(imagename)
 def image_conf_dir(imagename):
     return a_images_dir + [imagename]
 
-# Store dir structure -------------------------
-# a folder for volumes, and a folder for images
-#
-# volumes folder:
-# (considering tracking which containers volumes have been attached to)
-#
-# images folder:
-# each image should have a corresponding folder
-# each folder should have a file "image-meta" stating
-#   * workdir
-#   * build_path
-#   * stable, last and latest container names
-# each folder should have a "containers" file containing
-#   a list of the containers created from the image
-
 def cleanup():
     # iterate through image folders
     # remove references to images that are no longer present on the system
@@ -67,32 +67,53 @@ def cleanup():
     pass
 
 def register_image(imagename, workdir, build_path):
-    register_instance(imagename, "last", False)
+    fdef = {
+        "stable":False,
+        "latest": False,
+        "last": False,
+        "workdir":workdir,
+        "build_path":build_path
+    }
+    write_file_def(imagename, fdef)
+
+def add_container_to_list(imagename, containername):
+    a_filepath = a_images_dir + [imagename, "containers"]
+    s_content = read_file(a_filepath)
+    if not containername in s_content.split("\n"):
+        fh = open( os.path.sep.join(a_filepath), "a")
+        fh.write("%s\n" % containername)
+        fh.close()
 
 def register_container(imagename, containername):
     register_instance(imagename, "last", containername)
     register_instance(imagename, "latest", containername)
+    add_container_to_list(imagename, containername)
 
 def register_instance(imagename, instancename, containername):
     fdef = read_file_def(imagename)
     if not fdef:
-        fdef = {"stable":False, "latest": False, "last": False}
+        return False
 
     fdef[instancename] = containername
 
     write_file_def(imagename, fdef)
+    return True
 
 def register_last(imagename, containername):
     register_instance(imagename, "last", containername)
 
 def image_defined(imagename):
-    pass
+    if read_file_def(imagename):
+        return True
+    return False
 
 def image_workdir(imagename):
-    pass
+    fdef = read_file_def(imagename)
+    return fdef["workdir"]
 
 def image_build_path(imagename):
-    pass
+    fdef = read_file_def(imagename)
+    return fdef["build_path"]
 
 def get_key(keyname, data):
 
