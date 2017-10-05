@@ -1,0 +1,170 @@
+#!/bin/bash
+
+printhelp() {
+cat <<'EOF'
+Build a new docker image, and run a fresh container from it
+
+
+	docker-buildrun IMAGENAME CONTAINERNAME [ CONTAINEROPTIONS ... ]
+
+Requirements:
+
+* current working directory needs to have a Dockerfile in it, or you must specify an alternate Dockerfile
+* IMAGENAME must be the name of an image that does not yet exist
+* CONTAINERNAME must be the name of a container that does not yet exist
+
+If "VOLUME" keywords are found in the Dockerfile, docker volumes will be automatically be created, with name deterministically generated based on the image name
+
+If "EXPOSE" keywords are found in the Dockerfile, ports will be exposed on the host at the same port number
+
+Additional:
+
+If you have a "deploy_config" file in the current working directory you can pre-populate/override the parameters as described below:
+
+* `volumes` - a list of docker volume mount options, see man page for docker-run, '--volumes' section for example
+
+	volumes=(-v dockervolume:/path/to/mount -v volume2:/other/path)
+
+* `ports` - a list of ports to expose on the host
+
+	ports=(-p 8022:22 -p 8080:80)
+
+Options:
+
+Set the following environment variables to enable their fucntionality
+
+DRY_RUN=true -- don't actually perform docker actions
+
+params_file=<filename> -- use the configured file to pull parameters from
+
+data_dir=<dirname> -- use files from this directory when running ADD invocations
+
+dockerfile_file=<filename> -- use this file as Dockerfile instead of the default name "./Dockerfile"
+
+EOF
+}
+
+dockerw() {
+	echo docker "$@" >&2
+	if [[ -z "${DRY_RUN:-}" ]]; then
+		docker "$@"
+	fi
+}
+
+do_docker_build() {
+	dockerw build -t "$imagename" "$data_dir" -f "$dockerfile_file" || exit 1
+}
+
+do_docker_run() {
+	dockerw run --name="$containername" "${volumes[@]:-}" "${ports[@]:-}" "${networks[@]:-}" "$imagename" "$@"
+}
+
+image_exists() {
+	docker image ls --filter reference="$imagename" --format '{{.Repository}}' | egrep ^
+}
+
+container_exists() {
+	local t_containername="$1"; shift
+	docker ps -a --filter name="$t_containername" --format '{{.Names}}' | egrep "^$t_containername$"
+}
+
+get_dockerfile_info() {
+	local infotype="$1"; shift
+	grep -P "^\\s*$infotype" "$dockerfile_file"|sed -r -e "s/^\\s*$infotype//" -e 's/\s+/\n/'
+}
+
+alnum_convert() {
+	echo "$1" | sed -r 's/[^a-zA-Z0-9_]+/_/g'
+}
+
+generate_volume_mounts() {
+	while read path; do
+		[[ -n "$path" ]] || continue
+		volumes=("${volumes[@]}" -v "${imagename}$(alnum_convert "$path"):$path")
+	done < <(get_dockerfile_info VOLUME)
+}
+
+generate_port_exposures() {
+	while read portdef; do
+		portnum="${portdef%/*}"
+		ports=("${port[@]}" -p $portnum:$portdef)
+	done < <(get_dockerfile_info EXPOSE)
+}
+
+faile() {
+	echo "$*" >&2
+	exit 1
+}
+
+init_env() {
+	: ${data_dir=.}
+	: ${dockerfile_file=./Dockerfile}
+	: ${params_file=./config_deploy}
+
+	if [[ -f "$params_file" ]]; then
+		echo "Loading $params_file"
+		. "$params_file"
+	else
+		echo "No paramaters file params_file=$params_file"
+	fi
+}
+
+available_container_name() {
+	local i=1
+
+	while container_exists "${containername}_$i" >/dev/null; do
+		i=$((i+1))
+	done
+
+	echo "${containername}_$i"
+}
+
+do_runbuild() {
+
+	# --------------------------------------------------------
+	[[ -n "$imagename" ]] || faile "Specify an image name"
+	[[ -n "$containername" ]] || faile "Specify an container name"
+
+	# --------------------------------------------------------
+	if container_exists "$containername"; then
+		echo "--- Renaming existing container ---"
+		dockerw rename "$containername" "$(available_container_name)"
+		#faile "Container [$containername] already exists"
+	fi
+
+	# --------------------------------------------------------
+	if [[ -z "${volumes[*]:-}" ]]; then
+		generate_volume_mounts
+	fi
+
+	# --------------------------------------------------------
+	if [[ -z "${ports[*]:-}" ]]; then
+		generate_port_exposures
+	fi
+
+	# --------------------------------------------------------
+	if ! image_exists; then
+		do_docker_build
+	else
+		echo "Found a pre-existing image"
+		read -p "Override [$imagename] ? [y/N]> "
+
+		if [ "$REPLY" = y ]; then
+			do_docker_build
+		fi
+	fi
+
+	# --------------------------------------------------------
+	do_docker_run "$@"
+}
+
+main() {
+	init_env
+
+	imagename="$1"; shift
+	containername="$1"; shift
+
+	do_runbuild
+}
+
+main "$@"
