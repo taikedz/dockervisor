@@ -18,7 +18,7 @@ def start(args):
         if instance == "new":
             containername = start_new_container(imagename)
         else:
-            containername = store.registry_get_instance(instance, imagename)
+            containername = store.read_data(instance, imagename)
             if containername:
                 start_container(imagename, containername)
             else:
@@ -69,7 +69,7 @@ def stop_containers(imagename):
             common.fail("Error stopping container(s) !")
 
 def start_container(imagename, containername):
-    store.registry_set_instance("last", imagename, containername)
+    store.write_data("last", imagename, containername)
     code, sin, sout = run.call( ["docker", "start", containername] )
     if code > 0:
         common.fail("Could not start container %s"%containername)

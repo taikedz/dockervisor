@@ -17,4 +17,4 @@ def stable(args):
 
     containername = containernames[0]
 
-    store.registry_set_instance("stable", imagename, containername)
+    store.write_data("stable", imagename, containername)
