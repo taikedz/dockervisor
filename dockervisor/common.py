@@ -1,3 +1,4 @@
+import sys
 
 def args_check(array, minlen):
     return minlen <= len(array)
