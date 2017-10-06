@@ -22,5 +22,5 @@ def call(command_tokens):
     """
     command = ' '.join(command_tokens)
     proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    proc.wait()
-    return (proc.stdout.read(), proc.stderr.read())
+    rescode = proc.wait()
+    return (rescode, proc.stdout.read(), proc.stderr.read())
