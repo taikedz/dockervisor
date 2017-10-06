@@ -1,7 +1,9 @@
 from dockervisor import store
 from dockervisor import common
+from dockervisor import run
 import os
 import re
+import sys
 
 def build(args):
     imagename = args[0]
@@ -11,10 +13,10 @@ def build(args):
 
     build_path = common.item(args, 1, ".")
 
-    do_build( imagename, build_path )
+    res,sout,serr = do_build( imagename, build_path )
+    exit(res)
 
 def do_build(imagename, build_path):
     print("Building [%s] at [%s] taking files from [%s]" % (imagename, os.path.realpath("Dockerfile"), build_path))
-    rescode, stdout, stderr = common.call(''.join( ["docker", "build", "-t", imagename, build_path] ))
+    rescode, stdout, stderr = run.call(["docker", "build", "-t", imagename, build_path] , stdout=sys.stdout, stderr=sys.stderr)
 
-    # check stdout for errors
