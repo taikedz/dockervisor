@@ -14,7 +14,7 @@ sys.path.append(heredir)
 from dockervisor import image
 from dockervisor import container
 from dockervisor import stability
-from dockervsior import common
+from dockervisor import common
 
 def main():
     if not common.args_check(sys.argv, 2):
