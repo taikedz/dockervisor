@@ -1,7 +1,7 @@
-from dockervisor import commmon
+from dockervisor import common
 from dockervisor import run
-from dockervisor import manage
 from dockervisor import image
+import re
 
 # dockervisor start {new|last|stable} IMAGE
 
@@ -25,7 +25,9 @@ def start(args):
                 common.fail("No instance %s for image %s"%(instance, imagename))
 
     elif len(args) == 1:
-        start_container(imagename, args[0])
+        containername = args[0]
+        imagename = extract_image_name(containername)
+        start_container(imagename, containername)
     
     else:
         # Do not try to implement specifying multiple names in one command
@@ -44,7 +46,13 @@ def remove_empty_strings(string_array):
     while '' in string_array:
         string_array.remove('')
 
-def get_running_containers(imagename)
+def extract_image_name(containername):
+    m = re.match("^dcv_([a-zA-Z0-9_]+)_[0-9]+$", containername)
+    if m:
+        return m.group(1)
+    common.fail("[%s] is not a container managed by dockervisor" % containername)
+
+def get_running_containers(imagename):
     code, sin,sout = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=dcv_%s"%imagename])
     if code > 0:
         common.fail("Could not get list of funning containers")
