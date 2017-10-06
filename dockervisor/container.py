@@ -1,48 +1,79 @@
 from dockervisor import commmon
-from dockervisor import store
+from dockervisor import run
+from dockervisor import manage
 from dockervisor import image
+
+# dockervisor start {new|last|stable} IMAGE
 
 def start(args):
     if len(args) == 2:
-        imagename = args[0]
-        instance = args[1]
+        instance = args[0]
+        imagename = args[1]
 
-        if not instance in [":latest", ":new", ":stable"]:
-            common.fail("Incorrect instance name. Please use :latest, :stable or :new ")
+        if not instance in ["new", "last", "stable"]:
+            common.fail("Incorrect instance name. Please use 'new', 'last', or 'stable' ")
 
-        if instance == ":new":
-            containername = image.new_container(imagename)
-            store.register_container(imagename, containername)
+        stop_containers(imagename)
+
+        if instance == "new":
+            containername = start_new_container(imagename)
         else:
-            containername = store.container_instance(imagename, instance)
-            start_container(imagename, containername)
+            containername = store.registry_get_instance(instance, imagename)
+            if containername:
+                start_container(imagename, containername)
+            else:
+                common.fail("No instance %s for image %s"%(instance, imagename))
 
     elif len(args) == 1:
         start_container(imagename, args[0])
     
     else:
         # Do not try to implement specifying multiple names in one command
-        #   shell scripter can do that with
+        #   a shell scripter can do that with
         #   for container in name1 name2 name3; do dockervisor start "$container"; done
-        common.fail("Unknown sequence for start: %s" % ' '.join(args))
-
-def start_container(imagename, containername):
-    store.register_last(imagename, containername)
-    common.call( ["docker", "start", containername] )
+        common.fail("Unknown. Use 'dockervisor start {new|last|stable} IMAGE' or 'dockervisor start CONTAINER'")
 
 def stop(args):
     if len(args) != 1:
         common.fail("Unknown sequence for stop: %s" % ' '.join(args))
 
     imagename = args[0]
-    containername = store.container_last_run(imagename)
+    stop_containers(imagename)
 
-    if not containername:
-        # Could not find a container for the image name
-        #   maybe the user passed an actual container name
-        containername = imagename
+def remove_empty_strings(string_array):
+    while '' in string_array:
+        string_array.remove('')
 
-    stop_container(containername)
+def get_running_containers(imagename)
+    code, sin,sout = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=dcv_%s"%imagename])
+    if code > 0:
+        common.fail("Could not get list of funning containers")
 
-def stop_container(containername):
-    common.call( ["docker", "stop", containername] )
+    containernames = sin.decode("utf-8").strip().split("\n")
+    return containernames
+
+def stop_containers(imagename):
+    containernames = get_running_containers(imagename)
+    remove_empty_strings(containernames)
+    if len(containernames) > 0:
+        code, sin, sout = run.call( ["docker", "stop"] + containernames )
+        if code > 0:
+            common.fail("Error stopping container(s) !")
+
+def start_container(imagename, containername):
+    store.registry_set_instance("last", imagename, containername)
+    code, sin, sout = run.call( ["docker", "start", containername] )
+    if code > 0:
+        common.fail("Could not start container %s"%containername)
+
+def load_container_options(imagename):
+    return [] #TODO
+
+def start_new_container(imagename):
+    containername = generate_container_name(imagename)
+    options = load_container_options(imagename)
+    code, sin, sout = run.call(["docker", "run", "-d", "--name=%s"%containername]+options+[imagename])
+    if code > 0:
+        common.fail("Could not create new contaienr for %s"%imagename)
+
+    return containername
