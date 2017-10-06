@@ -14,8 +14,12 @@ sys.path.append(heredir)
 from dockervisor import image
 from dockervisor import container
 from dockervisor import stability
+from dockervsior import common
 
 def main():
+    if not common.args_check(sys.argv, 2):
+        printhelp()
+        common.fail("Fail - not enough arguments")
     action = sys.argv[1]
 
     if action == "build":
@@ -29,6 +33,21 @@ def main():
 
     elif action == "stable":
         stability.stable(sys.argv[2:])
+
+    else:
+        printhelp()
+
+def printhelp():
+    print("""
+    Dockervisor
+
+    Run a container form an image, let dockervisor manage ports, volumes and specific containers.
+
+    dockverisor build IMAGENAME DIRECTORY
+    dockervisor start [new|stable|latest] IMAGENAME
+    dockervisor stop IMAGENAME
+    dockervisor stable IMAGENAME
+    """)
 
 if __name__ == "__main__":
     main()
