@@ -1,9 +1,14 @@
 from dockervisor import store
 from dockervisor import common
 import os
+import re
 
 def build(args):
     imagename = args[0]
+
+    if not re.match("^[a-zA-Z0-9_]+$", imagename):
+        common.fail("Image name can only have letters, numbers, and underscore ('_').")
+
     build_path = common.item(args, 1, ".")
 
     do_build( imagename, build_path )
