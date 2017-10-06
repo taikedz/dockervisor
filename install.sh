@@ -19,6 +19,8 @@ fi
 
 echo "Copying dockervisor to $DOCKERVISOR_DIR..."
 cp -r dockervisor "$DOCKERVISOR_DIR"
+chmod -R 644 "$DOCKERVISOR_DIR"
+chmod 755 "$DOCKERVISOR_DIR" "$DOCKERVISOR_DIR/runtime.py"
 
 if [[ -h "$DOCKERVISOR_EXE" ]]; then
 	echo "Unlinking old dockervisor command ..."
