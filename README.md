@@ -2,6 +2,12 @@
 
 A tool for managing Docker images, containers, and rollback.
 
+Dockervisor allows you to start and stop containers by specifying the image name, instead of individual container names. Any one image controlled by dockervisor can only have one container running.
+
+Dockervisor ensures that all containers started by dockervisor use the same port exposures and volume mounts, using a `dcv-$IMAGENAME` file.
+
+This means that if you build a new version of an image, your new container will use the same data as the old container.
+
 ## Pre-requisites
 
 You will need the latest docker-ce: see the [official docker documentation](https://www.docker.com/community-edition)
@@ -32,11 +38,11 @@ Start the last known stable container
 
 	dockervisor start stable IMAGENAME
 
+List images (present and past) associated with IMAGENAME (based on containers using IMAGENAME)
+
+	dockervisor list images IMAGENAME
+
 ## Usage
-
-Dockervisor is intended to be used alongside Dockerfiles.
-
-Running `dockervisor build IMAGENAME .` in the same folder as a Dockerfile creates an image `IMAGENAME`
 
 ### Creating a new image and container
 
@@ -131,9 +137,13 @@ Ports get mapped out one-to-one by default - for example, if the Dockerfile spec
 
 ## Remaps
 
+A remapping overrides file can be specified to override the ports: add a `dcv-$IMAGENAME` to the same directory as the Dockerfile
+
+Multiple keys can be used (once per key name) in the same overrides file.
+
 ### Ports
 
-A port remapping override file can be specified to override the ports: add a `dcv-$IMAGENAME` to the same directory as the Dockerfile, with a "ports" key using a map of `host port --> container port definition`
+Use a "ports" key using a map of `host port --> container port definition`
 
 for example, to expose the container's port `8080` on the host's port `80`, and the container's port `22` on the host's port `8022`
 
@@ -145,3 +155,17 @@ for example, to expose the container's port `8080` on the host's port `80`, and 
 	}
 
 You can optionally specify the transport `/tcp` or `/udp` after the container port.
+
+### Volumes
+
+Use a "volumes" key using a map of `host path or volume --> container mount point`
+
+for example, to mount `my_custom_volume` on `/var/data`:
+
+	{
+		"volumes": {
+			"my_custom_volume":"/var/data"
+		}
+	}
+
+The host portion can be a directory, or a docker volume
