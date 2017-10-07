@@ -9,7 +9,7 @@ from dockervisor import files
 # * stable - the last item marked stable
 # * last - the last instance that was run
 
-homedir = pathlib.Path.home()
+homedir = str(pathlib.Path.home())
 a_store_dir = [homedir, "dcv-data"]
 
 def write_store_file(a_storefile, filedata):
