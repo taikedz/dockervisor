@@ -32,3 +32,16 @@ def read_options(imagename):
         pass # TODO actually load em here
 
     return options
+
+def expand_volumes(imagename, volumes):
+    params = []
+    for mount_path in volumes:
+        params.extend( ["-v", "%s:%s"%(volume_mount(imagename, mount_path),mount_path)] )
+    return params
+
+def expand_exposes(exposes):
+    params = []
+    for portdef in exposes:
+        hostport = port_number(portdef)
+        params.extend( ["-p", "%s:%s"%(hostport,portdef)] )
+    return params
