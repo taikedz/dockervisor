@@ -1,7 +1,9 @@
 from dockervisor import common
 from dockervisor import run
 from dockervisor import image
+from dockervisor import store
 import re
+import time
 
 # dockervisor start {new|last|stable} IMAGE
 
@@ -12,8 +14,6 @@ def start(args):
 
         if not instance in ["new", "last", "stable"]:
             common.fail("Incorrect instance name. Please use 'new', 'last', or 'stable' ")
-
-        stop_containers(imagename)
 
         if instance == "new":
             containername = start_new_container(imagename)
@@ -27,7 +27,8 @@ def start(args):
     elif len(args) == 1:
         containername = args[0]
         imagename = extract_image_name(containername)
-        start_container(imagename, containername)
+        if imagename:
+            start_container(imagename, containername)
     
     else:
         # Do not try to implement specifying multiple names in one command
@@ -69,6 +70,7 @@ def stop_containers(imagename):
             common.fail("Error stopping container(s) !")
 
 def start_container(imagename, containername):
+    stop_containers(imagename)
     store.write_data("last", imagename, containername)
     code, sin, sout = run.call( ["docker", "start", containername] )
     if code > 0:
@@ -77,11 +79,17 @@ def start_container(imagename, containername):
 def load_container_options(imagename):
     return [] #TODO
 
+def generate_container_name(imagename):
+    datime = time.strftime("%Y%m%d%H%M%S")
+    return "dcv_%s_%s" % (imagename, datime)
+
 def start_new_container(imagename):
+    stop_containers(imagename)
     containername = generate_container_name(imagename)
     options = load_container_options(imagename)
     code, sin, sout = run.call(["docker", "run", "-d", "--name=%s"%containername]+options+[imagename])
     if code > 0:
         common.fail("Could not create new contaienr for %s"%imagename)
+    store.write_data("last", imagename, containername)
 
     return containername
