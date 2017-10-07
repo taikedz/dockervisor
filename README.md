@@ -2,6 +2,10 @@
 
 A tool for managing Docker images, containers, and rollback.
 
+## Pre-requisites
+
+You will need the latest docker-ce: see the [official docker documentation](https://www.docker.com/community-edition)
+
 ## Quickstart
 
 In a directory with a Dockerfile, build the image. If the image already existed, it is replaced with a newer version.
