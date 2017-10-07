@@ -8,7 +8,7 @@ def ensure_dir(path_array):
 def read_file(path_array):
     filepath = as_path(path_array)
 
-    if not os.path.is_file(filepath):
+    if not os.path.isfile(filepath):
         return None
 
     fh = open(filepath, "r")
@@ -24,4 +24,4 @@ def write_file(path_array, filedata):
     fh.close()
 
 def as_path(path_array):
-    return path.os.sep.join(path_array)
+    return os.path.sep.join(path_array)
