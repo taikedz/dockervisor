@@ -26,15 +26,21 @@ def list_on_image(imagename, category):
 
     if category == "containers":
         print_call(["docker", "ps", "-a"]+psfilter)
+
     elif category == "running":
         print_call(["docker", "ps"]+psfilter)
 
     elif category == "images":
+        # list of images associated with image name
         imagelist = get_image_list_for(imagename)
+
+        # list of all images
         res,sout,serr = run.call(["docker", "images"])
         stringlines = sout.decode("utf-8").strip().split(os.linesep)
 
+        # header
         print(stringlines[0])
+        # full image line, if image is in imagelist
         for line in filter_string_lines(stringlines, imagelist):
             print(line)
     elif category == "stable":
@@ -50,11 +56,29 @@ def filter_string_lines(stringlines, imagenames):
                 result_lines.append(stringline)
     return result_lines
 
+def get_container_list_for(imagename):
+    res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Names}}"] + ps_filter(imagename))
+    containers = sout.decode("utf-8").strip().split(os.linesep)
+    common.remove_empty_strings(containers)
+    return containers
+
+def get_image_of(containername):
+    res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Image}}"] + ps_filter(containername))
+    images = sout.decode("utf-8").strip().split("\n")
+
+    common.remove_empty_strings(images)
+
+    if len(images) != 1:
+        common.fail("Could not find single image for %s"%containername)
+
+    return images[0]
+    
 
 def get_image_list_for(imagename):
     res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Image}}"] + ps_filter(imagename))
     
     images = sout.decode("utf-8").strip().split(os.linesep)
+    common.remove_empty_strings(images)
     images = set(images)
 
     return images
