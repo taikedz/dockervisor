@@ -1,24 +1,28 @@
 from dockervisor import common
 from dockervisor import files
 from dockervisor import store
+from dockervisor import options
 import os
 import json
+import re
 
 """
 Read the Dockerfile and extract the EXPORT and VOLUMES data
 """
 
-def write_dcv_file(imagename):
-    dcvfile = "dcv-%s"%imagename
+def add_dcv_file(imagename):
+    dcvfile = options.dcv_name(imagename)
     dcv_data = ""
+
     if os.path.isfile(dcvfile):
+        # use local dcv file
         dcv_data = files.read_file([dcvfile])
+        dcv_data = json.dumps(json.loads(dcv_data), indent=2)
     else:
+        # generate dcv file from dockerfile
         dcv_data = extract_dcv_data(imagename, "Dockerfile")
 
     store.write_data(dcvfile, imagename, dcv_data)
-    # TODO is this he right file for this?
-    # and should we move this and the read_dcv somewhere?
 
 def extract_dcv_data(imagename, dockerfile_path):
     exposes,volumes = extract_parameters(dockerfile_path)
@@ -33,17 +37,17 @@ def extract_dcv_data(imagename, dockerfile_path):
     for mountpoint in volumes:
         dcv_data["volumes"][volume_mount(imagename, mountpoint)] = mountpoint
 
-    return json.dumps(dcv_data)
+    return json.dumps(dcv_data, indent=2)
 
 def port_number(portdef):
-    m = re.match("([0-9]+)(/(tcp|udp))")
+    m = re.match("([0-9]+)(/(tcp|udp))", portdef)
     if not m:
         return "0"
     return m.group(1)
 
 def volume_mount(imagename, mount_path):
     """A deterministic volume name"""
-    return imagename + re.replace("[^a-zA-Z0-9_]+", "_", mount_path)
+    return imagename + re.sub("[^a-zA-Z0-9_]+", "_", mount_path)
 
 def extract_parameters(dockerfile_path):
     """ Extract the parameters from the specified dockerfile
@@ -63,7 +67,7 @@ def extract_default_parameters(dockerfile_data):
     lines = dockerfile_data.split(os.linesep)
 
     exposes = find_lines("EXPOSE", lines)
-    volumes = find_lines("VOLUMES", lines)
+    volumes = find_lines("VOLUME", lines)
 
     return exposes, volumes
 

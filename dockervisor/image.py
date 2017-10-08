@@ -1,9 +1,11 @@
 from dockervisor import store
 from dockervisor import common
 from dockervisor import run
+from dockervisor import dockerfile
 import os
 import re
 import sys
+import json
 
 def build(args):
     imagename = args[0]
@@ -13,11 +15,17 @@ def build(args):
 
     build_path = common.item(args, 1, ".")
 
-    res,sout,serr = do_build( imagename, build_path )
+    # Add dcv file first - if cannot be generated, prevents build
+    add_dcv(imagename)
 
-    # TODO - if dcv-IMAGENAME exists, copy it to image folder
-    # TODO else build one from Dockerfile
+    res,sout,serr = do_build( imagename, build_path )
     exit(res)
+
+def add_dcv(imagename):
+    try:
+        dockerfile.add_dcv_file(imagename)
+    except json.JSONDecodeError as e:
+        common.fail("Invalid dcv-%s file data:\n%s"%(imagename, str(e)))
 
 def do_build(imagename, build_path):
     print("Building [%s] at [%s] taking files from [%s]" % (imagename, os.path.realpath("Dockerfile"), build_path))

@@ -4,21 +4,6 @@ from dockervisor import files
 import os
 import json
 
-def setup_options(imagename):
-    dcvfile = dcv_name(imagename)
-    if not os.path.is_file(dcvfile):
-        return
-
-    filedata = files.read_file([dcvfile])
-    store.write_data(dcvfile, imagename, filedata)
-
-def read_options_file(imagename):
-    dcvfile = dcv_name(imagename)
-    return store.read_data(dcvfile, imagename)
-
-def dcv_name(imagename):
-    return "dcv-%s"%imagename
-
 def read_options(imagename):
     string_data = read_options_file(imagename)
 
@@ -27,21 +12,23 @@ def read_options(imagename):
     
     jsondata = json.loads(string_data)
     options = []
+    datakeys = jsondata.keys()
     
-    for section in ["volumes", "networks", "ports"]:
-        pass # TODO actually load em here
+    for prefix,section in [("-v","volumes"), ("-p", "ports")]:
+        if section in datakeys:
+            options.extend( expand_as_parameters(prefix, jsondata[section]) )
 
     return options
 
-def expand_volumes(imagename, volumes):
-    params = []
-    for mount_path in volumes:
-        params.extend( ["-v", "%s:%s"%(volume_mount(imagename, mount_path),mount_path)] )
-    return params
+def read_options_file(imagename):
+    dcvfile = dcv_name(imagename)
+    return store.read_data(dcvfile, imagename)
 
-def expand_exposes(exposes):
+def dcv_name(imagename):
+    return "dcv-%s"%imagename
+
+def expand_as_parameters(prefix, datamap):
     params = []
-    for portdef in exposes:
-        hostport = port_number(portdef)
-        params.extend( ["-p", "%s:%s"%(hostport,portdef)] )
+    for datakey in datamap:
+        params.extend( [prefix, "%s:%s"%(datakey,datamap[datakey])] )
     return params
