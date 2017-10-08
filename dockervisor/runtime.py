@@ -40,6 +40,9 @@ def main():
     elif action == "list":
         listing.listing(sys.argv[2:])
 
+    elif action == "cleanup":
+        removal.cleanup(sys.argv[2:])
+
     elif action == "remove":
         removal.remove(sys.argv[2:])
 
