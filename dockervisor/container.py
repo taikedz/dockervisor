@@ -55,7 +55,7 @@ def extract_image_name(containername):
     common.fail("[%s] is not a container managed by dockervisor" % containername)
 
 def get_running_containers(imagename):
-    code, sout,serr = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=dcv_%s"%imagename])
+    code, sout,serr = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=dcv_%s"%imagename], silent=True)
 
     containernames = sout.decode("utf-8").strip().split("\n")
     remove_empty_strings(containernames)

@@ -9,11 +9,13 @@ Command runner
 Issues commands in the shell
 """
 
-def call(command_tokens, stdout=subprocess.PIPE, stderr=subprocess.PIPE):
+def call(command_tokens, stdout=subprocess.PIPE, stderr=subprocess.PIPE, silent=False):
     """ Runs a command (first token), and resumes python script
 
     Returns a tuple of (stdout, stderr) output strings
     """
+    if not silent:
+        print(' '.join(command_tokens))
     proc = subprocess.Popen(command_tokens, stdout=stdout, stderr=stderr)
     rescode = proc.wait()
 
