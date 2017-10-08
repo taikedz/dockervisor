@@ -16,6 +16,8 @@ from dockervisor import container
 from dockervisor import stability
 from dockervisor import common
 from dockervisor import listing
+from dockervisor import removal
+from dockervisor import attach
 
 def main():
     if not common.args_check(sys.argv, 2):
@@ -37,6 +39,12 @@ def main():
 
     elif action == "list":
         listing.listing(sys.argv[2:])
+
+    elif action == "remove":
+        removal.remove(sys.argv[2:])
+
+    elif action == "attach":
+        attach.attach(sys.argv[2:])
 
     else:
         printhelp()
