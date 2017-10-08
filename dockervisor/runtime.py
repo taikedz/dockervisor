@@ -54,16 +54,38 @@ def main():
 
 def printhelp():
     print("""
-    Dockervisor
+Dockervisor
 
-    Run a container form an image, let dockervisor manage ports, volumes and specific containers.
+Run a container form an image, let dockervisor manage ports, volumes and specific containers.
+
+Build an image from a Dockerfile, and generate port and volume management configs
 
     dockverisor build IMAGENAME DIRECTORY
+
+Start and stop image containers
+
     dockervisor start {new|stable|latest} IMAGENAME
     dockervisor stop IMAGENAME
+
+Mark running container as stable
+
     dockervisor stable IMAGENAME
+
+List containers of an image, associated images, and stable image.
+
     dockervisor list {containers|running|images|stable} IMAGENAME
+
+Attach to the container of an image
+
     dockervisor attach IMAGENAME
+
+Remove all containers and images associated with this image name, except for containers and images for last and stable
+
+    dockervisor cleanup IMAGENAME
+
+Remove all data associated with this image !
+
+    dockervisor remove IMAGENAME
     """)
 
 if __name__ == "__main__":

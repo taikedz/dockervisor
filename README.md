@@ -107,6 +107,19 @@ Stop the current container if running, and run your stable version.
 	dockervisor stop IMAGENAME
 	dockervisor start stable IMAGENAME
 
+### Deletion
+
+You can have dockervisor remove all containers and images associated with an image name with these commands:
+
+	dockervisor cleanup IMAGENAME
+	dockervisor remove IMAGENAME
+
+The `cleanup` operation does not remove the last container run, and does not remove the `stable` container; it also does not remove the images associated with these. All other containers and images associated with this image name are removed.
+
+The `remove` operation removes ALL containers and images associated with this image name.
+
+Both prompt you once before execution.
+
 ## Notes
 
 ### Images
