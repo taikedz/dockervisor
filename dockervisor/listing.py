@@ -7,7 +7,7 @@ import os
 
 def listing(args):
     if not common.args_check(args, 2):
-        common.fail("Try 'dockervisor {containers|running|images}' IMAGENAME")
+        common.fail("Try 'dockervisor list {containers|running|images}' IMAGENAME")
 
     category = args[0]
     imagename = args[1]
