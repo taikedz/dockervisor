@@ -25,11 +25,10 @@ def remove(args, keep_images=[], keep_containers=[]):
 
     run.call(["docker", "rm"] + allcontainers, stdout=sys.stdout)
 
-    run.call(["docker", "image", "rm"] + list(allimages), stdout=sys.stdout )
+    run.call(["docker", "image", "rm"] + allimages, stdout=sys.stdout )
 
 def try_remove(item, array):
     try:
-        print("Remove %s from %s"%(item, str(array)))
         array.remove(item)
         return True
     except ValueError:

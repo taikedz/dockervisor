@@ -81,7 +81,7 @@ def get_image_list_for(imagename):
     
     images = sout.decode("utf-8").strip().split(os.linesep)
     common.remove_empty_strings(images)
-    images = set(images)
+    images = list(set(images))
 
     return images
 
