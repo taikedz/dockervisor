@@ -1,5 +1,6 @@
 from dockervisor import common
 from dockervisor import run
+from dockervisor import store
 from sys import stdout
 import os
 
@@ -7,7 +8,7 @@ import os
 
 def listing(args):
     if not common.args_check(args, 2):
-        common.fail("Try 'dockervisor list {containers|running|images}' IMAGENAME")
+        common.fail("Try 'dockervisor list {containers|running|images|stable}' IMAGENAME")
 
     category = args[0]
     imagename = args[1]
@@ -36,6 +37,8 @@ def list_on_image(imagename, category):
         print(stringlines[0])
         for line in filter_string_lines(stringlines, imagelist):
             print(line)
+    elif category == "stable":
+        print(store.read_data("stable", imagename))
     else:
         unknown_category(category)
 
@@ -57,7 +60,7 @@ def get_image_list_for(imagename):
     return images
 
 def unknown_category(category):
-    common.fail("Unkown category '%s'; use 'containers', 'running', or 'images'")
+    common.fail("Unkown category '%s'; use 'containers', 'running', 'images', or 'stable'")
 
 def print_call(command_array):
     run.call(command_array, stdout=stdout)
@@ -69,5 +72,7 @@ def list_all(category):
         print_call(["docker", "ps"])
     elif category == "images":
         print_call(["docker", "images"])
+    elif category == "stable":
+        print("Please specify an image.")
     else:
         unknown_category(category)

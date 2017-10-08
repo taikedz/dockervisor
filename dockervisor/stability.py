@@ -9,7 +9,7 @@ def stable(args):
         common.fail("Insufficient arguments. Run 'docker stable IMAGE' to mark IMAGE's currently running container as stable")
     imagename = args[0]
 
-    containernames = container.get_container_names(imagename)
+    containernames = container.get_running_containers(imagename)
 
     if len(containernames) != 1:
         print(containernames)
