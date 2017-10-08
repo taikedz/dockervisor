@@ -8,7 +8,7 @@ import os
 
 def listing(args):
     if not common.args_check(args, 2):
-        common.fail("Try 'dockervisor list {containers|running|images|stable}' IMAGENAME")
+        common.fail("Try 'dockervisor list {containers|running|images|last|stable}' IMAGENAME")
 
     category = args[0]
     imagename = args[1]
@@ -43,8 +43,10 @@ def list_on_image(imagename, category):
         # full image line, if image is in imagelist
         for line in filter_string_lines(stringlines, imagelist):
             print(line)
-    elif category == "stable":
-        print(store.read_data("stable", imagename))
+
+    elif category == "last" or category == "stable":
+        print(store.read_data(category, imagename))
+
     else:
         unknown_category(category)
 
@@ -57,13 +59,13 @@ def filter_string_lines(stringlines, imagenames):
     return result_lines
 
 def get_container_list_for(imagename):
-    res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Names}}"] + ps_filter(imagename))
+    res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Names}}"] + ps_filter(imagename), silent=True)
     containers = sout.decode("utf-8").strip().split(os.linesep)
     common.remove_empty_strings(containers)
     return containers
 
 def get_image_of(containername):
-    res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Image}}"] + ps_filter(containername))
+    res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Image}}"] + ps_filter(containername), silent=True)
     images = sout.decode("utf-8").strip().split("\n")
 
     common.remove_empty_strings(images)
@@ -75,7 +77,7 @@ def get_image_of(containername):
     
 
 def get_image_list_for(imagename):
-    res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Image}}"] + ps_filter(imagename))
+    res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Image}}"] + ps_filter(imagename), silent=True)
     
     images = sout.decode("utf-8").strip().split(os.linesep)
     common.remove_empty_strings(images)
