@@ -28,7 +28,7 @@ Stop the container
 
 Start the last used container from that image
 
-	dockervisor start latest IMAGENAME
+	dockervisor start last IMAGENAME
 
 Mark a container as stable - one you might want to come back to after upgrading an image
 
@@ -68,7 +68,7 @@ Stop the existing container by image name:
 
 Start the container again:
 
-	dockervisor start latest IMAGENAME
+	dockervisor start last IMAGENAME
 
 Start a container by name - the container must be of the format `dcv_$IMAGENAME_$SUFFIX`:
 
@@ -96,7 +96,7 @@ Simply run the build command against the image name
 
 	dockervisor build IMAGENAME .
 
-Running `latest` will still run the previously existing container, we must create a new container which becomes the new latest.
+Running `last` will still run the previously existing container, we must create a new container which becomes the new last.
 
 	dockervisor start new IMAGENAME
 
@@ -107,15 +107,17 @@ Stop the current container if running, and run your stable version.
 	dockervisor stop IMAGENAME
 	dockervisor start stable IMAGENAME
 
-## Considerations for internal implementation
+## Notes
 
 ### Images
 
-The name of the image determines a family of containers. Different images can be created from a same Dockerfile ; as such two Jenkins images could be created from a same Dockerfile and have a separate family of containers each.
+The name of the image determines a family of containers. Different images can be created from a same Dockerfile ; as such two apache images could be created from a same Dockerfile and have a separate family of containers each.
 
 This does create image duplication, however it eases container management separation.
 
 Images rebuilt with the same name leave their old image behind as an unnamed image for the original containers to continue using.
+
+You can use `dockervisor list images IMAGENAME` to list all images associated with that name, provided a container still exists for that image.
 
 ### Containers
 
@@ -125,19 +127,19 @@ Dockervisor keeps track of which was last run, and which is marked as stable.
 
 ### Volumes
 
-We can use the VOLUMES directives to generate volumes based on image name and path
+Dockervisor uses the `VOLUME` directives from the Dockerfile to generate volumes based on image name and path, unless overridden (see Remapping section).
 
 Every time a new container is created from a same image, it inherits the same volumes as its predecessor, since the volume name is geenrated deterministically.
 
-For example, for an image created as `mainjenkins` and exposing a mount location of `/var/jenkins_home`, a volume called `mainjenkins_var_jenkins_home` is created. Any container created from the `mainjenkins` image will receive the same named volume.
+For example, for an image created as `mainapache` and exposing a mount location of `/var/www`, a volume called `mainapache_var_www` is created. Any container created from the `mainapache` image will receive the same named volume.
 
 ### Ports
 
-Ports get mapped out one-to-one by default - for example, if the Dockerfile specifies `EXPOSE 8080`, then a mapping `-p 8080:8080` is added.
+Ports get mapped out one-to-one by default - for example, if the Dockerfile specifies `EXPOSE 8080`, then a mapping `-p 8080:8080` is used.
 
-## Remaps
+## Remapping
 
-A remapping overrides file can be specified to override the ports: add a `dcv-$IMAGENAME` to the same directory as the Dockerfile
+A remapping overrides file can be specified to override the ports: add a `dcv-$IMAGENAME` to the same directory as the Dockerfile containing a JSON data file with the appropriate keys.
 
 Multiple keys can be used (once per key name) in the same overrides file.
 
