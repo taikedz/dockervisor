@@ -59,7 +59,8 @@ def printhelp():
     dockervisor start {new|stable|latest} IMAGENAME
     dockervisor stop IMAGENAME
     dockervisor stable IMAGENAME
-    dockervisor list {containers|running|images} IMAGENAME
+    dockervisor list {containers|running|images|stable} IMAGENAME
+    dockervisor attach IMAGENAME
     """)
 
 if __name__ == "__main__":
