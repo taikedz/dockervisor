@@ -2,6 +2,7 @@ from dockervisor import common
 from dockervisor import run
 from dockervisor import image
 from dockervisor import store
+from dockervisor import options
 import re
 import time
 
@@ -54,30 +55,36 @@ def extract_image_name(containername):
     common.fail("[%s] is not a container managed by dockervisor" % containername)
 
 def get_running_containers(imagename):
-    code, sin,sout = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=dcv_%s"%imagename])
-    if code > 0:
-        common.fail("Could not get list of funning containers")
+    code, sout,serr = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=dcv_%s"%imagename])
 
-    containernames = sin.decode("utf-8").strip().split("\n")
+    containernames = sout.decode("utf-8").strip().split("\n")
+    remove_empty_strings(containernames)
     return containernames
 
 def stop_containers(imagename):
     containernames = get_running_containers(imagename)
-    remove_empty_strings(containernames)
+
     if len(containernames) > 0:
-        code, sin, sout = run.call( ["docker", "stop"] + containernames )
+        code, sout, serr = run.call( ["docker", "stop"] + containernames )
         if code > 0:
-            common.fail("Error stopping container(s) !")
+            common.fail("Error stopping container(s) !\n%s"%(sout.decode("utf-8")))
 
 def start_container(imagename, containername):
     stop_containers(imagename)
     store.write_data("last", imagename, containername)
-    code, sin, sout = run.call( ["docker", "start", containername] )
+
+    print("Starting %s"%containername)
+
+    code, sout, serr = run.call( ["docker", "start", containername] )
+
     if code > 0:
-        common.fail("Could not start container %s"%containername)
+        common.fail("Could not start container %s - try 'docker start -a %s'\n%s"%(containername,containername,sout.decode("utf-8")))
 
 def load_container_options(imagename):
-    return [] #TODO
+    coptions = options.read_options(imagename)
+    if coptions == None:
+        coptions = []
+    return coptions
 
 def generate_container_name(imagename):
     datime = time.strftime("%Y%m%d%H%M%S")
@@ -87,9 +94,11 @@ def start_new_container(imagename):
     stop_containers(imagename)
     containername = generate_container_name(imagename)
     options = load_container_options(imagename)
-    code, sin, sout = run.call(["docker", "run", "-d", "--name=%s"%containername]+options+[imagename])
+
+    code, sout, serr = run.call(["docker", "run", "-d", "--name=%s"%containername]+options+[imagename])
+
     if code > 0:
-        common.fail("Could not create new contaienr for %s"%imagename)
+        common.fail("Could not create new container for %s:\n%s"%(imagename, sout.decode("utf-8")))
     store.write_data("last", imagename, containername)
 
     return containername
