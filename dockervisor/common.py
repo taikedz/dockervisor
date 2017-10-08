@@ -1,5 +1,9 @@
 import sys
 
+def remove_empty_strings(string_array):
+    while '' in string_array:
+        string_array.remove('')
+
 def args_check(array, minlen):
     return minlen <= len(array)
 

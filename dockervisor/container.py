@@ -44,10 +44,6 @@ def stop(args):
     imagename = args[0]
     stop_containers(imagename)
 
-def remove_empty_strings(string_array):
-    while '' in string_array:
-        string_array.remove('')
-
 def extract_image_name(containername):
     m = re.match("^dcv_([a-zA-Z0-9_]+)_[0-9]+$", containername)
     if m:
@@ -58,7 +54,7 @@ def get_running_containers(imagename):
     code, sout,serr = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=dcv_%s"%imagename], silent=True)
 
     containernames = sout.decode("utf-8").strip().split("\n")
-    remove_empty_strings(containernames)
+    common.remove_empty_strings(containernames)
     return containernames
 
 def stop_containers(imagename):
