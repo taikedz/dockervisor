@@ -10,7 +10,7 @@ import re
 Read the Dockerfile and extract the EXPORT and VOLUMES data
 """
 
-def add_jcl_file(imagename):
+def add_jcl_file(imagename, dockerfile):
     jclfile = options.jcl_name(imagename)
     jcl_data = ""
 
@@ -20,7 +20,7 @@ def add_jcl_file(imagename):
         jcl_data = json.dumps(json.loads(jcl_data), indent=2)
     else:
         # generate jcl file from dockerfile
-        jcl_data = extract_jcl_data(imagename, "Dockerfile")
+        jcl_data = extract_jcl_data(imagename, dockerfile)
 
     store.write_data(jclfile, imagename, jcl_data)
 
