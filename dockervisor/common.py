@@ -1,4 +1,5 @@
 import sys
+import time
 
 def timestring(fmtstring="%Y%m%d%H%M%S"):
     return time.strftime(fmtstring)
