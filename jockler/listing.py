@@ -1,7 +1,7 @@
 from jockler import common
 from jockler import run
 from jockler import store
-from sys import stdout
+from sys import stdout,stderr
 import os
 import re
 
@@ -92,7 +92,7 @@ def get_image_list_for(imagename):
     return images
 
 def image_exists(imagename):
-    res, sout, serr = run.call(["docker", "images", "--format", "{{.Repository}}", imagename])
+    res, sout, serr = run.call(["docker", "images", "--format", "{{.Repository}}", imagename], silent=True)
     images = sout.strip().split(os.linesep)
     return imagename in images
 
@@ -100,7 +100,7 @@ def unknown_category(category):
     common.fail("Unkown category '%s'; use 'containers', 'running', 'images', or 'stable'")
 
 def print_call(command_array):
-    run.call(command_array, stdout=stdout)
+    run.call(command_array, stdout=stdout, stderr=stderr)
 
 def list_all(category):
     if category == "containers":
