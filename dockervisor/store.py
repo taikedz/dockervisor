@@ -53,8 +53,19 @@ def read_data(filename, imagename):
 def cleanup_images(imagename):
     imagelist = listing.get_image_list_for(imagename)
     
-    for image_id in imagelist
-    if not image_exists(image_id):
-        imagelist.remove(image_id)
+    for image_id in imagelist:
+        if not image_exists(image_id):
+            imagelist.remove(image_id)
 
     store.write_data("images", imagename, os.linesep.join(imagelist) )
+
+def list_named_images():
+    dirnames = os.listdir(os.path.sep.join(a_store_dir) )
+    valid_dirs = []
+
+    for dirname in dirnames:
+        checkpath = os.path.sep.join(a_store_dir + [dirname, "images"])
+        if os.path.isfile(checkpath):
+            valid_dirs.append(dirname)
+
+    return valid_dirs

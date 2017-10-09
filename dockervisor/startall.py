@@ -41,8 +41,10 @@ def list_start_all():
 def autostart(args):
     # =================
     # List
-    if common.args_check(args, 1):
+    if not common.args_check(args, 1):
         common.fail(helpstr)
+
+    imagename = args[0]
 
     if imagename == ":status":
         list_start_all()
@@ -51,15 +53,16 @@ def autostart(args):
     # ==================
     # Mark
 
-    if common.args_check(args, 2):
+    if not common.args_check(args, 2):
         common.fail(helpstr)
 
-    imagename = args[0]
     instance = args[1]
 
     if instance == "none":
         store.write_data(startfile, imagename, "")
+
     elif instance in ["last", "stable"]:
         store.write_data(startfile, imagename, store.read_data(instance, imagename) )
+
     else:
         common.fail("Bad instance label [%s]"%instance)
