@@ -2,7 +2,13 @@
 
 A tool for managing Docker images, containers, and rollback.
 
-Dockervisor allows you to start and stop containers by specifying the image name, instead of individual container names. Any one image controlled by dockervisor can only have one container running.
+## Features
+
+* start/stop latest container using the image name - let dockervisor manage container instances
+* mark specific container as "stable" - rollback after running a new container when needed
+* ensure every container for a given image uses the same data volumes
+
+Dockervisor allows you to start and stop containers by specifying the image name, instead of individual container names. Any one image managed by dockervisor can only have one container running.
 
 Dockervisor ensures that all containers started by dockervisor use the same port exposures and volume mounts, using a `dcv-$IMAGENAME` file.
 
@@ -10,15 +16,16 @@ This means that if you build a new version of an image, your new container will 
 
 ## Pre-requisites
 
-You will need the latest docker-ce: see the [official docker documentation](https://www.docker.com/community-edition)
+* Dockervisor is implemented in Python 3
+* You will need the latest docker-ce: see the [official docker documentation](https://www.docker.com/community-edition)
 
 ## Quickstart
 
-In a directory with a Dockerfile, build the image. If the image already existed, it is replaced with a newer version.
+In a directory with a Dockerfile, build the image, and register its port exposures and volume mounts. If the image already existed, it is replaced with a newer version.
 
 	dockervisor build IMAGENAME .
 
-Start a fresh container from the image - this always creates a new container and starts it, even if others had previously been created.
+Start a fresh container from the image - this always creates a new container and starts it, even if others had previously been created. Port exposures and volume mounts are pulled from dockervisor store `/var/dockervisor` on Linux, `%HOME%/dcv-data` on Windows.
 
 	dockervisor start new IMAGENAME
 
@@ -30,7 +37,7 @@ Start the last used container from that image
 
 	dockervisor start last IMAGENAME
 
-Mark a container as stable - one you might want to come back to after upgrading an image
+Mark the currently running container as stable - one you might want to come back to after upgrading an image
 
 	dockervisor stable IMAGENAME
 
@@ -38,7 +45,7 @@ Start the last known stable container
 
 	dockervisor start stable IMAGENAME
 
-List images (present and past) associated with IMAGENAME (based on containers using IMAGENAME)
+List images (present and past) associated with IMAGENAME
 
 	dockervisor list images IMAGENAME
 
@@ -130,7 +137,7 @@ This does create image duplication, however it eases container management separa
 
 Images rebuilt with the same name leave their old image behind as an unnamed image for the original containers to continue using.
 
-You can use `dockervisor list images IMAGENAME` to list all images associated with that name, provided a container still exists for that image.
+You can use `dockervisor list images IMAGENAME` to list all images associated with that name.
 
 ### Containers
 
@@ -142,9 +149,9 @@ Dockervisor keeps track of which was last run, and which is marked as stable.
 
 Dockervisor uses the `VOLUME` directives from the Dockerfile to generate volumes based on image name and path, unless overridden (see Remapping section).
 
-Every time a new container is created from a same image, it inherits the same volumes as its predecessor, since the volume name is geenrated deterministically.
+Every time a new container is created from a same image, it inherits the same volumes as its predecessor, since the volume name is generated deterministically.
 
-For example, for an image created as `mainapache` and exposing a mount location of `/var/www`, a volume called `mainapache_var_www` is created. Any container created from the `mainapache` image will receive the same named volume.
+For example, for an image created as `mainapache` and exposing a mount location of `/var/www`, a volume called `dcv_mainapache_var_www` is created. Any container created from the `mainapache` image will receive the same named volume.
 
 ### Ports
 
