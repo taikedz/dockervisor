@@ -49,6 +49,14 @@ List images (present and past) associated with IMAGENAME
 
 	dockervisor list images IMAGENAME
 
+Backup your data
+
+	dockervisor volumes backup linux IMAGENAME
+
+Restore your data
+
+	dockervisor volumes restore linux IMAGENAME ARCHIVEFILE
+
 ## Usage
 
 ### Creating a new image and container
@@ -114,6 +122,23 @@ Stop the current container if running, and run your stable version.
 	dockervisor stop IMAGENAME
 	dockervisor start stable IMAGENAME
 
+### Backup and restore
+
+You can create .TAR.GZ backup files of a `last` container of an image
+
+	dockervisor volumes backup linux IMAGENAME
+	dockervisor volumes restore linux IMAGENAME ARCHIVENAME
+
+You need to specify `linux` for Linux-based containers ; support for Windows-based containers will eventually be added.
+
+Before restoring, you need an initial container - if you are moving to another host, using the same dockerfile and optional remapping file, you can execute the following sequence:
+
+	dockervisor build IMAGENAME DIRECTORY
+	dockervisor start new IMAGENAME
+	dockervisor stop IMAGENAME
+	dockervisor volumes restore linux IMAGENAME ARCHIVENAME
+	dockervisor start last IMAGENAME
+
 ### Deletion
 
 You can have dockervisor remove all containers and images associated with an image name with these commands:
@@ -154,6 +179,8 @@ Every time a new container is created from a same image, it inherits the same vo
 For example, for an image created as `mainapache` and exposing a mount location of `/var/www`, a volume called `dcv_mainapache_var_www` is created. Any container created from the `mainapache` image will receive the same named volume.
 
 ### Ports
+
+Dockervisor uses the `EXPORT` directives from the Dockerfile to generate port exposure mappings, unless overridden (see Remapping section).
 
 Ports get mapped out one-to-one by default - for example, if the Dockerfile specifies `EXPOSE 8080`, then a mapping `-p 8080:8080` is used.
 

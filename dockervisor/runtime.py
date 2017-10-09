@@ -18,6 +18,7 @@ from dockervisor import common
 from dockervisor import listing
 from dockervisor import removal
 from dockervisor import attach
+from dockervisor import volumes
 
 def main():
     if not common.args_check(sys.argv, 2):
@@ -49,6 +50,9 @@ def main():
     elif action == "attach":
         attach.attach(sys.argv[2:])
 
+    elif action == "volumes":
+        volumes.volumes(sys.argv[2:])
+
     else:
         printhelp()
 
@@ -78,6 +82,16 @@ List containers of an image, associated images, and stable image.
 Attach to the container of an image
 
     dockervisor attach IMAGENAME
+
+See volume information
+
+    dockervisor volumes image IMAGENAME
+    dockervisor volumes container IMAGENAME
+
+Perform volume backup and restore on 'last' instance
+
+    dockervisor volumes backup {windows|linux} IMAGENAME
+    dockervisor volumes restore {windows|linux} IMAGENAME ARCHIVENAME
 
 Remove all containers and images associated with this image name, except for containers and images for last and stable
 
