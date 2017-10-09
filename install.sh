@@ -9,8 +9,14 @@ cd "$(dirname "$0")"
 	exit 1
 }
 
+if ! grep -q -e '^docker:' /etc/group; then
+	echo "Could not find docker group on this system - abort."
+	exit 1
+fi
+
 DOCKERVISOR_DIR="/usr/share/dockervisor"
 DOCKERVISOR_EXE="/usr/bin/dockervisor"
+DOCKERVISOR_DAT="/var/dockervisor"
 
 if [[ -d "$DOCKERVISOR_DIR" ]]; then
 	echo "Removing existing dockervisor ..."
@@ -29,5 +35,12 @@ fi
 
 echo "Installing new dockervisor ..."
 ln -s "$DOCKERVISOR_DIR/runtime.py" "$DOCKERVISOR_EXE"
+
+if [[ ! -d "$DOCKERVISOR_DAT" ]]; then
+	echo "Creating dockervisor data dir in $DOCKERVISOR_DAT"
+	mkdir "$DOCKERVISOR_DAT"
+	chown :docker "$DOCKERVISOR_DAT"
+	chmod 775 "$DOCKERVISOR_DAT"
+fi
 
 echo "Finished."

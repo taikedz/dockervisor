@@ -10,8 +10,13 @@ from dockervisor import files
 # * stable - the last item marked stable
 # * last - the last instance that was run
 
+# Support Windows
 homedir = str(pathlib.Path.home())
 a_store_dir = [homedir, "dcv-data"]
+
+# Unix global path
+if os.path.isdir("/var"):
+    a_store_dir = ["/var/dockervisor"]
 
 def write_store_file(a_storefile, filedata):
     ''' Ensures the store exists and writes the image data
