@@ -3,6 +3,7 @@ from dockervisor import run
 from dockervisor import store
 from sys import stdout
 import os
+import re
 
 # dockervisor list IMAGE CATCATEGORYY
 
@@ -35,10 +36,11 @@ def list_on_image(imagename, category):
         imagelist = get_image_list_for(imagename)
 
         # list of all images
-        res,sout,serr = run.call(["docker", "images"])
+        res,sout,serr = run.call(["docker", "images"], silent=True)
         stringlines = sout.strip().split(os.linesep)
 
         # header
+        print("Relevant images: %s" % ', '.join(imagelist) )
         print(stringlines[0])
         # full image line, if image is in imagelist
         for line in filter_string_lines(stringlines, imagelist):
@@ -54,7 +56,7 @@ def filter_string_lines(stringlines, imagenames):
     result_lines = []
     for imagename in imagenames:
         for stringline in stringlines:
-            if imagename in stringline:
+            if imagename in re.split("\\s+", stringline):
                 result_lines.append(stringline)
     return result_lines
 
