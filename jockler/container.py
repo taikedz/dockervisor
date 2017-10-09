@@ -49,7 +49,7 @@ def stop(args):
 def extract_image_name(containername):
     m = re.match("^(jcl|dcv)_([a-zA-Z0-9]+)_[0-9]+$", containername)
     if m:
-        return m.group(1)
+        return m.group(2)
     common.fail("[%s] is not a container managed by jockler" % containername)
 
 def get_running_containers(imagename):
@@ -79,7 +79,8 @@ def start_container(imagename, containername):
         common.fail("Could not start container %s - try 'docker start -a %s'\n%s"%(containername,containername,sout))
 
 def found_running_container(containername):
-    code, sout, serr = run.call(["docker", "ps", "--format", "{{.Names}}", "--filter", containername])
+    time.sleep(1)
+    code, sout, serr = run.call(["docker", "ps", "--format", "{{.Names}}", "--filter", "name=%s"%containername], silent=True)
     containers = sout.strip().split(os.linesep)
     return containername in containers
 
