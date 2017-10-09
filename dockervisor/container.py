@@ -83,7 +83,7 @@ def load_container_options(imagename):
     return coptions
 
 def generate_container_name(imagename):
-    datime = time.strftime("%Y%m%d%H%M%S")
+    datime = common.timestring()
     return "dcv_%s_%s" % (imagename, datime)
 
 def start_new_container(imagename):
