@@ -1,4 +1,5 @@
 from dockervisor import run
+from dockervisor import store
 from dockervisor import common
 from dockervisor import backup
 from dockervisor import listing
