@@ -53,7 +53,7 @@ def extract_image_name(containername):
 def get_running_containers(imagename):
     code, sout,serr = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=dcv_%s"%imagename], silent=True)
 
-    containernames = sout.decode("utf-8").strip().split("\n")
+    containernames = sout.strip().split("\n")
     common.remove_empty_strings(containernames)
     return containernames
 
@@ -63,7 +63,7 @@ def stop_containers(imagename):
     if len(containernames) > 0:
         code, sout, serr = run.call( ["docker", "stop"] + containernames )
         if code > 0:
-            common.fail("Error stopping container(s) !\n%s"%(sout.decode("utf-8")))
+            common.fail("Error stopping container(s) !\n%s"%(sout))
 
 def start_container(imagename, containername):
     stop_containers(imagename)
@@ -74,7 +74,7 @@ def start_container(imagename, containername):
     code, sout, serr = run.call( ["docker", "start", containername] )
 
     if code > 0:
-        common.fail("Could not start container %s - try 'docker start -a %s'\n%s"%(containername,containername,sout.decode("utf-8")))
+        common.fail("Could not start container %s - try 'docker start -a %s'\n%s"%(containername,containername,sout))
 
 def load_container_options(imagename):
     coptions = options.read_options(imagename)
@@ -94,7 +94,7 @@ def start_new_container(imagename):
     code, sout, serr = run.call(["docker", "run", "-d", "--name=%s"%containername]+options+[imagename])
 
     if code > 0:
-        common.fail("Could not create new container for %s:\n%s"%(imagename, sout.decode("utf-8")))
+        common.fail("Could not create new container for %s:\n%s"%(imagename, sout))
     store.write_data("last", imagename, containername)
 
     return containername
