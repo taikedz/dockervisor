@@ -1,6 +1,6 @@
 # Jockler
 
-A tool for managing Docker images, containers, and rollback.
+A tool to juggle Docker images and containers in your stead.
 
 ## Features
 
