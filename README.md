@@ -19,8 +19,15 @@ This means that if you build a new version of an image, your new container will 
 
 ## Pre-requisites
 
+Required:
+
 * Dockervisor is implemented in Python 3
 * You will need the latest docker-ce: see the [official docker documentation](https://www.docker.com/community-edition)
+
+Optional:
+
+* `git` is required for cloning, or you can download a [ZIP file](https://github.com/taikedz/dockervisor/archive/master.zip)
+* For auto-start functionality, systemd is required, or you will need to write your own init script
 
 Install the Dockervisor tool:
 
@@ -29,6 +36,8 @@ Install the Dockervisor tool:
 
 	# Optionally, enable autostart
 	sudo systemctl enable dockervisor-autostart
+
+If your system does not use systemd, you will need to write your own init script to call `dockervisor start-all` on system startup
 
 ## Quickstart
 
