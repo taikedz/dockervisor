@@ -36,7 +36,7 @@ def list_on_image(imagename, category):
 
         # list of all images
         res,sout,serr = run.call(["docker", "images"])
-        stringlines = sout.decode("utf-8").strip().split(os.linesep)
+        stringlines = sout.strip().split(os.linesep)
 
         # header
         print(stringlines[0])
@@ -60,13 +60,13 @@ def filter_string_lines(stringlines, imagenames):
 
 def get_container_list_for(imagename):
     res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Names}}"] + ps_filter(imagename), silent=True)
-    containers = sout.decode("utf-8").strip().split(os.linesep)
+    containers = sout.strip().split(os.linesep)
     common.remove_empty_strings(containers)
     return containers
 
 def get_image_of(containername):
     res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Image}}"] + ps_filter(containername), silent=True)
-    images = sout.decode("utf-8").strip().split("\n")
+    images = sout.strip().split("\n")
 
     common.remove_empty_strings(images)
 
@@ -77,11 +77,15 @@ def get_image_of(containername):
     
 
 def get_image_list_for(imagename):
-    res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Image}}"] + ps_filter(imagename), silent=True)
-    
-    images = sout.decode("utf-8").strip().split(os.linesep)
-    common.remove_empty_strings(images)
-    images = list(set(images))
+    #res,sout,serr = run.call(["docker", "ps", "-a", "--format", "{{.Image}}"] + ps_filter(imagename), silent=True)
+    #
+    #images = sout.strip().split(os.linesep)
+    #common.remove_empty_strings(images)
+    images = store.read_data("images", imagename)
+    if not images:
+        return []
+
+    images = list(set(images.split(os.linesep)))
 
     return images
 
@@ -94,11 +98,15 @@ def print_call(command_array):
 def list_all(category):
     if category == "containers":
         print_call(["docker", "ps", "-a"])
+
     elif category == "running":
         print_call(["docker", "ps"])
+
     elif category == "images":
         print_call(["docker", "images"])
+
     elif category == "stable":
         print("Please specify an image.")
+
     else:
         unknown_category(category)
