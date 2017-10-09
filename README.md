@@ -5,7 +5,7 @@ A tool for managing Docker images, containers, and rollback.
 ## Features
 
 * start/stop latest container using the image name - let dockervisor manage container instances
-* mark specific container as "stable" - rollback to a "stable" version after running a new container, if needed
+* mark a given container as "stable" - rollback to a "stable" version after running a new container, if needed
 * ensure every container for a given image uses the same data volumes
 * backup and restore volume data (Linux only for now) across hosts
 * automatically clean out old, unused containers and images
