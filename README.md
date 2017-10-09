@@ -32,11 +32,11 @@ Install the Dockervisor tool:
 
 ## Quickstart
 
-In a directory with a Dockerfile, build the image, and register its port exposures and volume mounts. If the image already existed, it is replaced with a newer version.
+In a directory with a Dockerfile, build the image, and register its port exposures and volume mounts to the dockervisor store. If the image already existed, it is replaced with a newer version.
 
 	dockervisor build IMAGENAME .
 
-Start a fresh container from the image - this always creates a new container and starts it, even if others had previously been created. Port exposures and volume mounts are pulled from dockervisor store `/var/dockervisor` on Linux, `%HOME%/dcv-data` on Windows.
+Start a fresh container from the image - this always creates a new container and starts it, even if others had previously been created. Port exposures and volume mounts are pulled from dockervisor store.
 
 	dockervisor start new IMAGENAME
 
@@ -69,6 +69,10 @@ Restore your data
 	dockervisor volumes restore linux IMAGENAME ARCHIVEFILE
 
 ## Usage
+
+### Dockervisor store
+
+Dockervisor stores its metadata on image and containers in `/var/dockervisor` on Linux, `%HOME%/dcv-data` on Windows.
 
 ### Creating a new image and container
 
