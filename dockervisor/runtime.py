@@ -111,6 +111,7 @@ Remove all data associated with this image !
 Mark an image for automatic starting; use 'none' to turn off autostart
 
     dockervisor autostart IMAGENAME {last|stable|none}
+    dockervisor autostart :status
 
 Start all images marked for autostart:
 

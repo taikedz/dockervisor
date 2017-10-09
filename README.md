@@ -9,6 +9,7 @@ A tool for managing Docker images, containers, and rollback.
 * ensure every container for a given image uses the same data volumes
 * backup and restore volume data (Linux only for now) across hosts
 * automatically clean out old, unused containers and images
+* automatically start select containers on machine boot-up (requires systemd)
 
 Dockervisor allows you to start and stop containers by specifying the image name, instead of individual container names. Any one image managed by dockervisor can only have one container running.
 
@@ -133,6 +134,10 @@ Dockervisor can mark images for automatic starting:
 	dockervisor autostart IMAGENAME {last|stable|none}
 
 If not set, or set to none, the image's container will not be started
+
+To see the current status of all images
+
+	dockervisor autostart :status
 
 To run all containers marked for autostart, run
 

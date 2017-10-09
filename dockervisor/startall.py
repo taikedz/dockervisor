@@ -23,12 +23,34 @@ def start_all(args):
 
     for imagename in image_list:
         containername = store.read_data(startfile, imagename)
-        if not containername and not containername.strip(): # not null and not effectively empty string
+        if not containername or not containername.strip(): # possibly null, or effectively empty string
             continue
 
         container.start_container(imagename, containername)
 
+def list_start_all():
+    image_list = store.list_named_images()
+
+    for imagename in image_list:
+        containername = store.read_data(startfile, imagename)
+        if not containername or not containername.strip(): # possibly null, or effectively empty string
+            continue
+
+        print("%s --> %s"% (imagename, containername.strip() ))
+
 def autostart(args):
+    # =================
+    # List
+    if common.args_check(args, 1):
+        common.fail(helpstr)
+
+    if imagename == ":status":
+        list_start_all()
+        return
+
+    # ==================
+    # Mark
+
     if common.args_check(args, 2):
         common.fail(helpstr)
 
