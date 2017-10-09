@@ -5,6 +5,14 @@ import os
 import json
 
 def read_options(imagename):
+    options = []
+    
+    for prefix,section in [("-v","volumes"), ("-p", "ports")]:
+        options.extend( extract_section(imagename, prefix, section) )
+
+    return options
+
+def extract_section(imagename, prefix, section):
     string_data = read_options_file(imagename)
 
     if not string_data:
@@ -13,15 +21,15 @@ def read_options(imagename):
     jsondata = json.loads(string_data)
     options = []
     datakeys = jsondata.keys()
-    
-    for prefix,section in [("-v","volumes"), ("-p", "ports")]:
-        if section in datakeys:
-            options.extend( expand_as_parameters(prefix, jsondata[section]) )
+
+    if section in datakeys:
+        options.extend( expand_as_parameters(prefix, jsondata[section]) )
 
     return options
 
+
 def read_options_file(imagename):
-    jclfile = dcv_name(imagename)
+    jclfile = jcl_name(imagename)
     return store.read_data(jclfile, imagename)
 
 def jcl_name(imagename):
