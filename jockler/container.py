@@ -5,6 +5,8 @@ from jockler import store
 from jockler import options
 import re
 import time
+import sys
+import os
 
 # jockler start {new|last|stable} IMAGE
 
@@ -71,10 +73,15 @@ def start_container(imagename, containername):
 
     print("Starting %s"%containername)
 
-    code, sout, serr = run.call( ["docker", "start", containername] )
+    code, sout, serr = run.call( ["docker", "start", containername], stdout=sys.stdout, stderr=sys.stderr )
 
-    if code > 0:
+    if code > 0 or not found_running_container(containername):
         common.fail("Could not start container %s - try 'docker start -a %s'\n%s"%(containername,containername,sout))
+
+def found_running_container(containername):
+    code, sout, serr = run.call(["docker", "ps", "--format", "{{.Names}}", "--filter", containername])
+    containers = sout.strip().split(os.linesep)
+    return containername in containers
 
 def load_container_options(imagename):
     coptions = options.read_options(imagename)
@@ -93,8 +100,8 @@ def start_new_container(imagename):
 
     code, sout, serr = run.call(["docker", "run", "-d", "--name=%s"%containername, "--restart", "on-failure"]+options+[imagename])
 
-    if code > 0:
-        common.fail("Could not create new container for %s:\n%s"%(imagename, sout))
+    if code > 0 or not found_running_container(containername):
+        common.fail("Could not create new container for %s, or could not start created container:\n%s"%(imagename, sout))
     store.write_data("last", imagename, containername)
 
     return containername
