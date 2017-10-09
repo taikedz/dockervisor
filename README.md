@@ -5,8 +5,10 @@ A tool for managing Docker images, containers, and rollback.
 ## Features
 
 * start/stop latest container using the image name - let dockervisor manage container instances
-* mark specific container as "stable" - rollback after running a new container when needed
+* mark specific container as "stable" - rollback to a "stable" version after running a new container, if needed
 * ensure every container for a given image uses the same data volumes
+* backup and restore volume data (Linux only for now) across hosts
+* automatically clean out old, unused containers and images
 
 Dockervisor allows you to start and stop containers by specifying the image name, instead of individual container names. Any one image managed by dockervisor can only have one container running.
 
@@ -18,6 +20,11 @@ This means that if you build a new version of an image, your new container will 
 
 * Dockervisor is implemented in Python 3
 * You will need the latest docker-ce: see the [official docker documentation](https://www.docker.com/community-edition)
+
+Install the Dockervisor tool:
+
+	git clone https://github.com/taikedz/dockervisor
+	sudo dockervisor/install.sh
 
 ## Quickstart
 
@@ -61,11 +68,6 @@ Restore your data
 
 ### Creating a new image and container
 
-Install the Dockervisor tool
-
-	git clone https://github.com/taikedz/dockervisor
-	sudo dockervisor/install.sh
-
 Switch in to the folder with your Dockerfile, and use dockervisor to build a new image:
 
 	dockervisor build IMAGENAME .
@@ -103,7 +105,7 @@ You can see which container is marked as stable
 
 	dockervisor stable show IMAGENAME
 
-The `:stable` label always points to the same container until explicitly changed.
+The `stable` label always points to the same container until explicitly changed.
 
 ### Updating the image and container
 
@@ -117,9 +119,8 @@ Running `last` will still run the previously existing container, we must create 
 
 ### Rollback
 
-Stop the current container if running, and run your stable version.
+Run your stable version - this will also stop any currently running version.
 
-	dockervisor stop IMAGENAME
 	dockervisor start stable IMAGENAME
 
 ### Backup and restore
@@ -152,7 +153,7 @@ The `remove` operation removes ALL containers and images associated with this im
 
 Both prompt you once before execution.
 
-## Notes
+## Implementation specifics
 
 ### Images
 
