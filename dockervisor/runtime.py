@@ -19,6 +19,7 @@ from dockervisor import listing
 from dockervisor import removal
 from dockervisor import attach
 from dockervisor import volumes
+from dockervisor import startall
 
 def main():
     if not common.args_check(sys.argv, 2):
@@ -52,6 +53,12 @@ def main():
 
     elif action == "volumes":
         volumes.volumes(sys.argv[2:])
+
+    elif action == "autostart":
+        startall.autostart(sys.argv[2:])
+
+    elif action == "start-all":
+        startall.start_all(sys.argv[2:])
 
     else:
         printhelp()
@@ -100,6 +107,15 @@ Remove all containers and images associated with this image name, except for con
 Remove all data associated with this image !
 
     dockervisor remove IMAGENAME
+
+Mark an image for automatic starting; use 'none' to turn off autostart
+
+    dockervisor autostart IMAGENAME {last|stable|none}
+
+Start all images marked for autostart:
+
+    dockervisor start-all
+
     """)
 
 if __name__ == "__main__":
