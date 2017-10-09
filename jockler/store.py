@@ -1,6 +1,6 @@
 import pathlib
 import os
-from dockervisor import files
+from jockler import files
 
 # Store dir structure -------------------------
 #
@@ -16,7 +16,7 @@ a_store_dir = [homedir, "dcv-data"]
 
 # Unix global path
 if os.path.isdir("/var"):
-    a_store_dir = ["/var/dockervisor"]
+    a_store_dir = ["/var/jockler"]
 
 def write_store_file(a_storefile, filedata):
     ''' Ensures the store exists and writes the image data

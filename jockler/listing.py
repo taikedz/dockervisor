@@ -1,15 +1,15 @@
-from dockervisor import common
-from dockervisor import run
-from dockervisor import store
+from jockler import common
+from jockler import run
+from jockler import store
 from sys import stdout
 import os
 import re
 
-# dockervisor list IMAGE CATCATEGORYY
+# jockler list IMAGE CATCATEGORYY
 
 def listing(args):
     if not common.args_check(args, 2):
-        common.fail("Try 'dockervisor list {containers|running|images|last|stable}' IMAGENAME")
+        common.fail("Try 'jockler list {containers|running|images|last|stable}' IMAGENAME")
 
     category = args[0]
     imagename = args[1]

@@ -1,10 +1,10 @@
-from dockervisor import container
-from dockervisor import common
+from jockler import container
+from jockler import common
 import os
 
 def attach(args):
     if not common.args_check(args, 1):
-        common.fail("Usage:\n  dockervisor attach IMAGENAME [COMMAND]")
+        common.fail("Usage:\n  jockler attach IMAGENAME [COMMAND]")
 
     imagename = args[0]
 

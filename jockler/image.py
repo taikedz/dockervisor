@@ -1,7 +1,7 @@
-from dockervisor import store
-from dockervisor import common
-from dockervisor import run
-from dockervisor import dockerfile
+from jockler import store
+from jockler import common
+from jockler import run
+from jockler import dockerfile
 import os
 import re
 import sys

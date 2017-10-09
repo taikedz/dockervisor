@@ -1,17 +1,17 @@
-from dockervisor import store
-from dockervisor import common
-from dockervisor import container
+from jockler import store
+from jockler import common
+from jockler import container
 
-# dockervisor stable IMAGE
+# jockler stable IMAGE
 
 helpstr = """
 Mark IMAGENAME's currently running container as stable:
 
-    dockervisor stable IMAGENAME
+    jockler stable IMAGENAME
 
 See stable image:
 
-    dockervisor stable :show IMAGENAME
+    jockler stable :show IMAGENAME
 
 """
 

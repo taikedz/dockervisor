@@ -1,8 +1,8 @@
-from dockervisor import run
-from dockervisor import store
-from dockervisor import common
-from dockervisor import backup
-from dockervisor import listing
+from jockler import run
+from jockler import store
+from jockler import common
+from jockler import backup
+from jockler import listing
 import json
 import os
 import sys
@@ -14,10 +14,10 @@ import time
 helpstring = '''
 Try one of the following commands:
 
-dockervisor volumes image IMAGENAME
-dockervisor volumes container IMAGE {last|stable}
-dockervisor volumes backup {windows|linux} IMAGENAME
-dockervisor volumes restore {windows|linux} IMAGENAME ARCHIVEFILE
+jockler volumes image IMAGENAME
+jockler volumes container IMAGE {last|stable}
+jockler volumes backup {windows|linux} IMAGENAME
+jockler volumes restore {windows|linux} IMAGENAME ARCHIVEFILE
 '''
 
 def volumes(args):

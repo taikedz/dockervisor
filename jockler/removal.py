@@ -1,14 +1,14 @@
-from dockervisor import run
-from dockervisor import common
-from dockervisor import listing
-from dockervisor import store
+from jockler import run
+from jockler import common
+from jockler import listing
+from jockler import store
 import sys
 
-# dockervisor remove IMAGENAME
+# jockler remove IMAGENAME
 
 def remove(args, keep_images=[], keep_containers=[]):
     if not common.args_check(args,1):
-        common.fail("Remove all containers and images associated with an image.\n\nUsage:\n\n    dockervisor remove IMAGENAME")
+        common.fail("Remove all containers and images associated with an image.\n\nUsage:\n\n    jockler remove IMAGENAME")
 
     imagename = args[0]
 
@@ -38,7 +38,7 @@ def try_remove(item, array):
 # remove all old containers and images (not last) (not stable)
 def cleanup(args):
     if not common.args_check(args,1):
-        common.fail("Remove all old containers and images, except for last and stable.\n\nUsage:\n\n    dockervisor cleanup IMAGENAME")
+        common.fail("Remove all old containers and images, except for last and stable.\n\nUsage:\n\n    jockler cleanup IMAGENAME")
 
     imagename = args[0]
     

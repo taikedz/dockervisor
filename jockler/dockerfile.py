@@ -1,7 +1,7 @@
-from dockervisor import common
-from dockervisor import files
-from dockervisor import store
-from dockervisor import options
+from jockler import common
+from jockler import files
+from jockler import store
+from jockler import options
 import os
 import json
 import re

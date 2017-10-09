@@ -11,15 +11,15 @@ sys.path.append(heredir)
 
 # =======================
 
-from dockervisor import image
-from dockervisor import container
-from dockervisor import stability
-from dockervisor import common
-from dockervisor import listing
-from dockervisor import removal
-from dockervisor import attach
-from dockervisor import volumes
-from dockervisor import startall
+from jockler import image
+from jockler import container
+from jockler import stability
+from jockler import common
+from jockler import listing
+from jockler import removal
+from jockler import attach
+from jockler import volumes
+from jockler import startall
 
 def main():
     if not common.args_check(sys.argv, 2):
@@ -65,9 +65,9 @@ def main():
 
 def printhelp():
     print("""
-Dockervisor
+Jockler
 
-Run a container form an image, let dockervisor manage ports, volumes and specific containers.
+Run a container form an image, let jockler manage ports, volumes and specific containers.
 
 Build an image from a Dockerfile, and generate port and volume management configs
 
@@ -75,47 +75,47 @@ Build an image from a Dockerfile, and generate port and volume management config
 
 Start and stop image containers
 
-    dockervisor start {new|stable|latest} IMAGENAME
-    dockervisor stop IMAGENAME
+    jockler start {new|stable|latest} IMAGENAME
+    jockler stop IMAGENAME
 
 Mark running container as stable
 
-    dockervisor stable IMAGENAME
+    jockler stable IMAGENAME
 
 List containers of an image, associated images, and stable image.
 
-    dockervisor list {containers|running|images|stable} IMAGENAME
+    jockler list {containers|running|images|stable} IMAGENAME
 
 Attach to the container of an image
 
-    dockervisor attach IMAGENAME
+    jockler attach IMAGENAME
 
 See volume information
 
-    dockervisor volumes image IMAGENAME
-    dockervisor volumes container IMAGENAME
+    jockler volumes image IMAGENAME
+    jockler volumes container IMAGENAME
 
 Perform volume backup and restore on 'last' instance
 
-    dockervisor volumes backup {windows|linux} IMAGENAME
-    dockervisor volumes restore {windows|linux} IMAGENAME ARCHIVENAME
+    jockler volumes backup {windows|linux} IMAGENAME
+    jockler volumes restore {windows|linux} IMAGENAME ARCHIVENAME
 
 Remove all containers and images associated with this image name, except for containers and images for last and stable
 
-    dockervisor cleanup IMAGENAME
+    jockler cleanup IMAGENAME
 
 Remove all data associated with this image !
 
-    dockervisor remove IMAGENAME
+    jockler remove IMAGENAME
 
 Mark an image for automatic starting; use 'none' to turn off autostart
 
-    dockervisor autostart IMAGENAME {last|stable|none}
-    dockervisor autostart :status
+    jockler autostart IMAGENAME {last|stable|none}
+    jockler autostart :status
 
 Start all images marked for autostart:
 
-    dockervisor start-all
+    jockler start-all
 
     """)
 

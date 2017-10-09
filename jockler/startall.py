@@ -1,18 +1,18 @@
-from dockervisor import store
-from dockervisor import common
-from dockervisor import container
+from jockler import store
+from jockler import common
+from jockler import container
 
 helpstr = '''
 
 Try the following:
 
-    dockervisor autostart IMAGENAME last
-    dockervisor autostart IMAGENAME stable
-    dockervisor autostart IMAGENAME none
+    jockler autostart IMAGENAME last
+    jockler autostart IMAGENAME stable
+    jockler autostart IMAGENAME none
 
 To start all images marked for autostart:
 
-    dockervisor start-all
+    jockler start-all
 
 '''
 

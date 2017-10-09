@@ -17,48 +17,48 @@ if ! grep -q -e '^docker:' /etc/group; then
 	exit 1
 fi
 
-DOCKERVISOR_DIR="/usr/share/dockervisor"
-DOCKERVISOR_EXE="/usr/bin/dockervisor"
-DOCKERVISOR_DAT="/var/dockervisor"
-DOCKERVISOR_SER="/etc/systemd/system/dockervisor-autostart.service"
+JOCKLER_DIR="/usr/share/jockler"
+JOCKLER_EXE="/usr/bin/jockler"
+JOCKLER_DAT="/var/jockler"
+JOCKLER_SER="/etc/systemd/system/jockler-autostart.service"
 
 # ==========================================
 # Remove old versions to avoid file conflicts
 
-if [[ -d "$DOCKERVISOR_DIR" ]]; then
-	echo "Removing existing dockervisor ..."
-	rm -r "$DOCKERVISOR_DIR"
+if [[ -d "$JOCKLER_DIR" ]]; then
+	echo "Removing existing jockler ..."
+	rm -r "$JOCKLER_DIR"
 fi
 
-echo "Copying dockervisor to $DOCKERVISOR_DIR..."
-cp -r dockervisor "$DOCKERVISOR_DIR"
-chmod -R 644 "$DOCKERVISOR_DIR"
-chmod 755 "$DOCKERVISOR_DIR" "$DOCKERVISOR_DIR/runtime.py"
+echo "Copying jockler to $JOCKLER_DIR..."
+cp -r jockler "$JOCKLER_DIR"
+chmod -R 644 "$JOCKLER_DIR"
+chmod 755 "$JOCKLER_DIR" "$JOCKLER_DIR/runtime.py"
 
 
 # ==========================================
 # In case we changed the location of the executable
 
-if [[ -h "$DOCKERVISOR_EXE" ]]; then
-	echo "Unlinking old dockervisor command ..."
-	unlink "$DOCKERVISOR_EXE"
+if [[ -h "$JOCKLER_EXE" ]]; then
+	echo "Unlinking old jockler command ..."
+	unlink "$JOCKLER_EXE"
 fi
 
-echo "Installing new dockervisor ..."
-ln -s "$DOCKERVISOR_DIR/runtime.py" "$DOCKERVISOR_EXE"
+echo "Installing new jockler ..."
+ln -s "$JOCKLER_DIR/runtime.py" "$JOCKLER_EXE"
 
 
 # ==========================================
 # Service file ; also check to see that destination exists
 # in lieu of checking for systemctl itself
 
-if [[ -f "$DOCKERVISOR_SER" ]]; then
+if [[ -f "$JOCKLER_SER" ]]; then
 	echo "Replacing service file"
-	rm "$DOCKERVISOR_SER"
+	rm "$JOCKLER_SER"
 fi
 
-if [[ -d "$(dirname "$DOCKERVISOR_SER")" ]]; then
-	cp service/dockervisor.service "$DOCKERVISOR_SER"
+if [[ -d "$(dirname "$JOCKLER_SER")" ]]; then
+	cp service/jockler.service "$JOCKLER_SER"
 fi
 
 
@@ -66,11 +66,11 @@ fi
 # Data ; this is the Linux install script
 # no Windows support
 
-if [[ ! -d "$DOCKERVISOR_DAT" ]]; then
-	echo "Creating dockervisor data dir in $DOCKERVISOR_DAT"
-	mkdir "$DOCKERVISOR_DAT"
-	chown :docker "$DOCKERVISOR_DAT"
-	chmod 775 "$DOCKERVISOR_DAT"
+if [[ ! -d "$JOCKLER_DAT" ]]; then
+	echo "Creating jockler data dir in $JOCKLER_DAT"
+	mkdir "$JOCKLER_DAT"
+	chown :docker "$JOCKLER_DAT"
+	chmod 775 "$JOCKLER_DAT"
 fi
 
 echo "---- Finished ----"

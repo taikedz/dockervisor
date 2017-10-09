@@ -1,12 +1,12 @@
-from dockervisor import common
-from dockervisor import run
-from dockervisor import image
-from dockervisor import store
-from dockervisor import options
+from jockler import common
+from jockler import run
+from jockler import image
+from jockler import store
+from jockler import options
 import re
 import time
 
-# dockervisor start {new|last|stable} IMAGE
+# jockler start {new|last|stable} IMAGE
 
 def start(args):
     if len(args) == 2:
@@ -34,8 +34,8 @@ def start(args):
     else:
         # Do not try to implement specifying multiple names in one command
         #   a shell scripter can do that with
-        #   for container in name1 name2 name3; do dockervisor start "$container"; done
-        common.fail("Unknown. Use 'dockervisor start {new|last|stable} IMAGE' or 'dockervisor start CONTAINER'")
+        #   for container in name1 name2 name3; do jockler start "$container"; done
+        common.fail("Unknown. Use 'jockler start {new|last|stable} IMAGE' or 'jockler start CONTAINER'")
 
 def stop(args):
     if len(args) != 1:
@@ -48,7 +48,7 @@ def extract_image_name(containername):
     m = re.match("^dcv_([a-zA-Z0-9]+)_[0-9]+$", containername)
     if m:
         return m.group(1)
-    common.fail("[%s] is not a container managed by dockervisor" % containername)
+    common.fail("[%s] is not a container managed by jockler" % containername)
 
 def get_running_containers(imagename):
     code, sout,serr = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=dcv_%s"%imagename], silent=True)
