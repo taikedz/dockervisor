@@ -17,6 +17,7 @@ fi
 DOCKERVISOR_DIR="/usr/share/dockervisor"
 DOCKERVISOR_EXE="/usr/bin/dockervisor"
 DOCKERVISOR_DAT="/var/dockervisor"
+DOCKERVISOR_SER="/etc/systemd/system/dockervisor-autostart.service"
 
 if [[ -d "$DOCKERVISOR_DIR" ]]; then
 	echo "Removing existing dockervisor ..."
@@ -35,6 +36,12 @@ fi
 
 echo "Installing new dockervisor ..."
 ln -s "$DOCKERVISOR_DIR/runtime.py" "$DOCKERVISOR_EXE"
+
+if [[ -f "$DOCKERVISOR_SER" ]] && [[ -d "$(dirname "$DOCKERVISOR_SER")" ]]; then
+	echo "Replacing service file"
+	rm "$DOCKERVISOR_SER"
+	cp service/dockervisor.service "$DOCKERVISOR_SER"
+fi
 
 if [[ ! -d "$DOCKERVISOR_DAT" ]]; then
 	echo "Creating dockervisor data dir in $DOCKERVISOR_DAT"

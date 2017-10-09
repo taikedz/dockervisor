@@ -26,6 +26,9 @@ Install the Dockervisor tool:
 	git clone https://github.com/taikedz/dockervisor
 	sudo dockervisor/install.sh
 
+	# Optionally, enable autostart
+	sudo systemctl enable dockervisor-autostart
+
 ## Quickstart
 
 In a directory with a Dockerfile, build the image, and register its port exposures and volume mounts. If the image already existed, it is replaced with a newer version.
@@ -122,6 +125,24 @@ Running `last` will still run the previously existing container, we must create 
 Run your stable version - this will also stop any currently running version.
 
 	dockervisor start stable IMAGENAME
+
+### Auto-start
+
+Dockervisor can mark images for automatic starting:
+
+	dockervisor autostart IMAGENAME {last|stable|none}
+
+If not set, or set to none, the image's container will not be started
+
+To run all containers marked for autostart, run
+
+	dockervisor start-all
+
+To have this run at host startup, run
+
+	systemctl enable dockervisor-autostart
+
+This is only available on systems with systemd.
 
 ### Backup and restore
 

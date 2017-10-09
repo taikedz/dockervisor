@@ -1,0 +1,13 @@
+[Unit]
+
+Description=Dockervisor auto-start kickoff
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/dockervisor start-all
+User=root
+Restart=never
+PIDFile=/run/dockervisor.pid
+
+[Install]
+WantedBy=default.target
