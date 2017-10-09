@@ -43,7 +43,7 @@ If your system does not use systemd, you will need to write your own init script
 
 In a directory with a Dockerfile, build the image, and register its port exposures and volume mounts to the jockler store. If the image already existed, it is replaced with a newer version.
 
-	jockler build IMAGENAME .
+	jockler build IMAGENAME
 
 Start a fresh container from the image - this always creates a new container and starts it, even if others had previously been created. Port exposures and volume mounts are pulled from jockler store.
 
@@ -87,8 +87,12 @@ Jockler stores its metadata on image and containers in `/var/jockler` on Linux, 
 
 Switch in to the folder with your Dockerfile, and use jockler to build a new image:
 
-	jockler build IMAGENAME .
+	jockler build IMAGENAME
 	jockler start new IMAGENAME
+
+By default, jockler will look for a `$IMAGENAME-Dockerfile` file and a `$IMAGENAME-data/` directory in the current working directory. If these are not found, it will use the default `Dockerfile` and `./` contexts.
+
+Jockler will also look for a `jcl-$IMAGENAME` file to register port mappings and volumes; if none is found, port and volume information are taken from the dockerfile.
 
 This builds a fresh image to be called `IMAGENAME`, and runs a container based off of it.
 
@@ -171,13 +175,11 @@ You can create .TAR.GZ backup files of a `last` container of an image
 
 You need to specify `linux` for Linux-based containers ; support for Windows-based containers will eventually be added.
 
-Before restoring, you need an initial container - if you are moving to another host, using the same dockerfile and optional remapping file, you can execute the following sequence:
+Before restoring, you need an equivalent image definition - if you are moving to another host, using the same dockerfile and optional remapping file, you can execute the following sequence:
 
 	jockler build IMAGENAME DIRECTORY
-	jockler start new IMAGENAME
-	jockler stop IMAGENAME
 	jockler volumes restore linux IMAGENAME ARCHIVENAME
-	jockler start last IMAGENAME
+	jockler start new IMAGENAME
 
 ### Deletion
 
