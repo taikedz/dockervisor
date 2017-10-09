@@ -20,7 +20,7 @@ def listing(args):
         list_on_image(imagename, category)
 
 def ps_filter(imagename):
-    return ["--filter", "name=dcv_%s_"%imagename]
+    return ["--filter", "name=jcl_%s_"%imagename]
 
 def list_on_image(imagename, category):
     psfilter = ps_filter(imagename)

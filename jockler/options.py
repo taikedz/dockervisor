@@ -21,11 +21,11 @@ def read_options(imagename):
     return options
 
 def read_options_file(imagename):
-    dcvfile = dcv_name(imagename)
-    return store.read_data(dcvfile, imagename)
+    jclfile = dcv_name(imagename)
+    return store.read_data(jclfile, imagename)
 
-def dcv_name(imagename):
-    return "dcv-%s"%imagename
+def jcl_name(imagename):
+    return "jockler-%s"%imagename
 
 def expand_as_parameters(prefix, datamap):
     params = []

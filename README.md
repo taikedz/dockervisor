@@ -13,7 +13,7 @@ A tool to juggle Docker images and containers in your stead.
 
 Jockler allows you to start and stop containers by specifying the image name, instead of individual container names. Any one image managed by jockler can only have one container running.
 
-Jockler ensures that all containers started by jockler use the same port exposures and volume mounts, using a `dcv-$IMAGENAME` file.
+Jockler ensures that all containers started by jockler use the same port exposures and volume mounts, using a `jockler-$IMAGENAME` file.
 
 This means that if you build a new version of an image, your new container will use the same data as the old container.
 
@@ -81,7 +81,7 @@ Restore your data
 
 ### Jockler store
 
-Jockler stores its metadata on image and containers in `/var/jockler` on Linux, `%HOME%/dcv-data` on Windows.
+Jockler stores its metadata on image and containers in `/var/jockler` on Linux, `%HOME%/jockler-data` on Windows.
 
 ### Creating a new image and container
 
@@ -104,7 +104,7 @@ Start the container again:
 
 	jockler start last IMAGENAME
 
-Start a container by name - the container must be of the format `dcv_$IMAGENAME_$SUFFIX`:
+Start a container by name - the container must be of the format `jcl_$IMAGENAME_$SUFFIX`:
 
 	jockler start container_name
 
@@ -206,7 +206,7 @@ You can use `jockler list images IMAGENAME` to list all images associated with t
 
 ### Containers
 
-Containers get named as `dcv_$IMAGENAME_$DATE` upon creation.
+Containers get named as `jcl_$IMAGENAME_$DATE` upon creation.
 
 Jockler keeps track of which was last run, and which is marked as stable.
 
@@ -216,7 +216,7 @@ Jockler uses the `VOLUME` directives from the Dockerfile to generate volumes bas
 
 Every time a new container is created from a same image, it inherits the same volumes as its predecessor, since the volume name is generated deterministically.
 
-For example, for an image created as `mainapache` and exposing a mount location of `/var/www`, a volume called `dcv_mainapache_var_www` is created. Any container created from the `mainapache` image will receive the same named volume.
+For example, for an image created as `mainapache` and exposing a mount location of `/var/www`, a volume called `jcl_mainapache_var_www` is created. Any container created from the `mainapache` image will receive the same named volume.
 
 ### Ports
 
@@ -226,7 +226,7 @@ Ports get mapped out one-to-one by default - for example, if the Dockerfile spec
 
 ## Remapping
 
-A remapping overrides file can be specified to override the ports: add a `dcv-$IMAGENAME` to the same directory as the Dockerfile containing a JSON data file with the appropriate keys.
+A remapping overrides file can be specified to override the ports: add a `jockler-$IMAGENAME` to the same directory as the Dockerfile containing a JSON data file with the appropriate keys.
 
 Multiple keys can be used (once per key name) in the same overrides file.
 

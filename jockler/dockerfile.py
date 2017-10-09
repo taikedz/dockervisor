@@ -10,34 +10,34 @@ import re
 Read the Dockerfile and extract the EXPORT and VOLUMES data
 """
 
-def add_dcv_file(imagename):
-    dcvfile = options.dcv_name(imagename)
-    dcv_data = ""
+def add_jcl_file(imagename):
+    jclfile = options.dcv_name(imagename)
+    jcl_data = ""
 
-    if os.path.isfile(dcvfile):
-        # use local dcv file
-        dcv_data = files.read_file([dcvfile])
-        dcv_data = json.dumps(json.loads(dcv_data), indent=2)
+    if os.path.isfile(jclfile):
+        # use local jcl file
+        jcl_data = files.read_file([dcvfile])
+        jcl_data = json.dumps(json.loads(dcv_data), indent=2)
     else:
-        # generate dcv file from dockerfile
-        dcv_data = extract_dcv_data(imagename, "Dockerfile")
+        # generate jcl file from dockerfile
+        jcl_data = extract_dcv_data(imagename, "Dockerfile")
 
-    store.write_data(dcvfile, imagename, dcv_data)
+    store.write_data(jclfile, imagename, dcv_data)
 
-def extract_dcv_data(imagename, dockerfile_path):
+def extract_jcl_data(imagename, dockerfile_path):
     exposes,volumes = extract_parameters(dockerfile_path)
 
-    dcv_data = {}
-    dcv_data["ports"] = {}
-    dcv_data["volumes"] = {}
+    jcl_data = {}
+    jcl_data["ports"] = {}
+    jcl_data["volumes"] = {}
 
     for exposed_port in exposes:
-        dcv_data["ports"][port_number(exposed_port)] = exposed_port
+        jcl_data["ports"][port_number(exposed_port)] = exposed_port
 
     for mountpoint in volumes:
-        dcv_data["volumes"][volume_mount(imagename, mountpoint)] = mountpoint
+        jcl_data["volumes"][volume_mount(imagename, mountpoint)] = mountpoint
 
-    return json.dumps(dcv_data, indent=2)
+    return json.dumps(jcl_data, indent=2)
 
 def port_number(portdef):
     m = re.match("([0-9]+)(/(tcp|udp))?", portdef)
@@ -47,7 +47,7 @@ def port_number(portdef):
 
 def volume_mount(imagename, mount_path):
     """A deterministic volume name"""
-    return "dcv_" + imagename + re.sub("[^a-zA-Z0-9_]+", "_", mount_path)
+    return "jcl_" + imagename + re.sub("[^a-zA-Z0-9_]+", "_", mount_path)
 
 def extract_parameters(dockerfile_path):
     """ Extract the parameters from the specified dockerfile

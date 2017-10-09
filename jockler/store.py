@@ -12,7 +12,7 @@ from jockler import files
 
 # Support Windows
 homedir = str(pathlib.Path.home())
-a_store_dir = [homedir, "dcv-data"]
+a_store_dir = [homedir, "jockler-data"]
 
 # Unix global path
 if os.path.isdir("/var"):

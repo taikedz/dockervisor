@@ -15,8 +15,8 @@ def build(args):
 
     build_path = common.item(args, 1, ".")
 
-    # Add dcv file first - if cannot be generated, prevents build
-    add_dcv(imagename)
+    # Add jcl file first - if cannot be generated, prevents build
+    add_jcl(imagename)
 
     res,sout,serr = do_build( imagename, build_path )
 
@@ -26,11 +26,11 @@ def build(args):
 
     exit(res)
 
-def add_dcv(imagename):
+def add_jcl(imagename):
     try:
-        dockerfile.add_dcv_file(imagename)
+        dockerfile.add_jcl_file(imagename)
     except json.JSONDecodeError as e:
-        common.fail("Invalid dcv-%s file data:\n%s"%(imagename, str(e)))
+        common.fail("Invalid jockler-%s file data:\n%s"%(imagename, str(e)))
 
 def get_tagged_image_id(imagename):
     # This should perform an exact match
