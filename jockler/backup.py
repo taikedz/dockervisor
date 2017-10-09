@@ -1,4 +1,5 @@
 from jockler import common
+from jockler import options
 from jockler import store
 from jockler import run
 from jockler import volumes
@@ -45,7 +46,7 @@ def do_linux_volume_backup(containername, destination, archivename, mountpoints)
 
 def do_volume_restore(imagename, systemname, archivefile, destination="."):
     destination = os.path.abspath(destination)
-    archive_fullpath = os.path.sep.join(destination,archivefile)
+    archive_fullpath = os.path.sep.join([destination,archivefile])
 
     volumes_array = options.extract_section(imagename, "-v", "volumes")
 
