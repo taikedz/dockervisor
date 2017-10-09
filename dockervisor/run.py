@@ -9,7 +9,19 @@ Command runner
 Issues commands in the shell
 """
 
+
 def call(command_tokens, stdout=subprocess.PIPE, stderr=subprocess.PIPE, silent=False):
+    res,sout,serr = call_b(command_tokens, stdout, stderr, silent)
+
+    if sout != None:
+        sout = sout.decode("utf-8")
+
+    if serr != None:
+        serr = serr.decode("utf-8")
+
+    return res,sout,serr
+
+def call_b(command_tokens, stdout=subprocess.PIPE, stderr=subprocess.PIPE, silent=False):
     """ Runs a command (first token), and resumes python script
 
     Returns a tuple of (stdout, stderr) output strings
