@@ -45,7 +45,7 @@ def stop(args):
     stop_containers(imagename)
 
 def extract_image_name(containername):
-    m = re.match("^jcl_([a-zA-Z0-9]+)_[0-9]+$", containername)
+    m = re.match("^(jcl|dcv)_([a-zA-Z0-9]+)_[0-9]+$", containername)
     if m:
         return m.group(1)
     common.fail("[%s] is not a container managed by jockler" % containername)
