@@ -11,18 +11,18 @@ Read the Dockerfile and extract the EXPORT and VOLUMES data
 """
 
 def add_jcl_file(imagename):
-    jclfile = options.dcv_name(imagename)
+    jclfile = options.jcl_name(imagename)
     jcl_data = ""
 
     if os.path.isfile(jclfile):
         # use local jcl file
         jcl_data = files.read_file([dcvfile])
-        jcl_data = json.dumps(json.loads(dcv_data), indent=2)
+        jcl_data = json.dumps(json.loads(jcl_data), indent=2)
     else:
         # generate jcl file from dockerfile
-        jcl_data = extract_dcv_data(imagename, "Dockerfile")
+        jcl_data = extract_jcl_data(imagename, "Dockerfile")
 
-    store.write_data(jclfile, imagename, dcv_data)
+    store.write_data(jclfile, imagename, jcl_data)
 
 def extract_jcl_data(imagename, dockerfile_path):
     exposes,volumes = extract_parameters(dockerfile_path)
