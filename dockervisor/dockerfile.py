@@ -40,9 +40,9 @@ def extract_dcv_data(imagename, dockerfile_path):
     return json.dumps(dcv_data, indent=2)
 
 def port_number(portdef):
-    m = re.match("([0-9]+)(/(tcp|udp))", portdef)
+    m = re.match("([0-9]+)(/(tcp|udp))?", portdef)
     if not m:
-        return "0"
+        common.fail("Invalid port definition %s"%portdef)
     return m.group(1)
 
 def volume_mount(imagename, mount_path):
