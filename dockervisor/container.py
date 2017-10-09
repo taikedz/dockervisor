@@ -91,7 +91,7 @@ def start_new_container(imagename):
     containername = generate_container_name(imagename)
     options = load_container_options(imagename)
 
-    code, sout, serr = run.call(["docker", "run", "-d", "--name=%s"%containername]+options+[imagename])
+    code, sout, serr = run.call(["docker", "run", "-d", "--name=%s"%containername, "--restart", "on-failure"]+options+[imagename])
 
     if code > 0:
         common.fail("Could not create new container for %s:\n%s"%(imagename, sout))
