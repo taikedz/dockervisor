@@ -23,6 +23,7 @@ def remove(args, keep_images=[], keep_containers=[]):
     if not confirm_removal(allcontainers, allimages):
         common.fail("ABORTED")
 
+    # FIXME we also need to clean the store !
     run.call(["docker", "rm"] + allcontainers, stdout=sys.stdout)
 
     run.call(["docker", "image", "rm"] + allimages, stdout=sys.stdout )
