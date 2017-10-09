@@ -58,6 +58,7 @@ if [[ -f "$JOCKLER_SER" ]]; then
 fi
 
 if [[ -d "$(dirname "$JOCKLER_SER")" ]]; then
+	echo "Installing new service file"
 	cp service/jockler.service "$JOCKLER_SER"
 fi
 
