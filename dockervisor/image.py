@@ -22,7 +22,7 @@ def build(args):
 
     if res == 0:
         image_id = get_tagged_image_id(imagename)
-        store.append_data("images", imagename, image_id)
+        append_image_id(imagename, image_id)
 
     exit(res)
 
@@ -38,6 +38,18 @@ def get_tagged_image_id(imagename):
 
     image_id = sout.strip()
     return image_id
+
+def append_image_id(imagename, image_id):
+    imagelist = store.read_data("images", imagename)
+    if imagelist == None:
+        imagelist = ''
+    imagelist = imagelist.split(os.linesep)
+
+    imagelist.append(image_id)
+    common.remove_empty_strings(imagelist)
+    imagelist = list(set(imagelist))
+
+    store.write_data( "images", imagename, os.linesep.join(imagelist) )
 
 def do_build(imagename, build_path):
     print("Building [%s] at [%s] taking files from [%s]" % (imagename, os.path.realpath("Dockerfile"), build_path))
