@@ -16,7 +16,7 @@ def build(args):
     dockerfile, build_path = dockerfiles_for(imagename)
 
     # Add jcl file first - if cannot be generated, prevents build
-    add_jcl(imagename)
+    add_jcl(imagename, dockerfile)
 
     res,sout,serr = do_build( imagename, dockerfile, build_path )
 
@@ -38,9 +38,9 @@ def dockerfiles_for(imagename):
 
     return dockerfile, build_path
 
-def add_jcl(imagename):
+def add_jcl(imagename, cdockerfile):
     try:
-        dockerfile.add_jcl_file(imagename)
+        dockerfile.add_jcl_file(imagename, cdockerfile)
     except json.JSONDecodeError as e:
         common.fail("Invalid jockler-%s file data:\n%s"%(imagename, str(e)))
 
@@ -65,5 +65,5 @@ def append_image_id(imagename, image_id):
 
 def do_build(imagename, dockerfile, build_path):
     print("Building [%s] at [%s] taking files from [%s]" % (imagename, os.path.realpath(dockerfile), build_path))
-    return run.call(["docker", "build", "-t", imagename, build_path] , stdout=sys.stdout, stderr=sys.stderr)
+    return run.call(["docker", "build", "-t", imagename, "-f", dockerfile, build_path] , stdout=sys.stdout, stderr=sys.stderr)
 
