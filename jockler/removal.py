@@ -23,9 +23,9 @@ def remove(args, keep_images=[], keep_containers=[]):
     if not confirm_removal(allcontainers, allimages):
         common.fail("ABORTED")
 
-    run.call(["docker", "rm"] + allcontainers, stdout=sys.stdout)
+    run.call(["docker", "rm"] + allcontainers, stdout=sys.stdout, silent=True)
 
-    run.call(["docker", "image", "rm"] + allimages, stdout=sys.stdout )
+    run.call(["docker", "image", "rm"] + allimages, stdout=sys.stdout, silent=True )
     store.cleanup_images(imagename)
 
 def try_remove(item, array):
