@@ -47,7 +47,7 @@ def port_number(portdef):
 
 def volume_mount(imagename, mount_path):
     """A deterministic volume name"""
-    return imagename + re.sub("[^a-zA-Z0-9_]+", "_", mount_path)
+    return "dcv_" + imagename + re.sub("[^a-zA-Z0-9_]+", "_", mount_path)
 
 def extract_parameters(dockerfile_path):
     """ Extract the parameters from the specified dockerfile
