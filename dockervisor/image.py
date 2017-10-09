@@ -10,8 +10,8 @@ import json
 def build(args):
     imagename = args[0]
 
-    if not re.match("^[a-zA-Z0-9_]+$", imagename):
-        common.fail("Image name can only have letters, numbers, and underscore ('_').")
+    if not re.match("^[a-zA-Z0-9]+$", imagename):
+        common.fail("Image name can only have letters a-z, A-Z and numbers 0-9.")
 
     build_path = common.item(args, 1, ".")
 
