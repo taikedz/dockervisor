@@ -49,5 +49,12 @@ def read_data(filename, imagename):
     ''' Read text data from file; returns string data, or None if file was not found
     '''
     return read_store_file(a_store_dir + [imagename, filename])
-    
 
+def cleanup_images(imagename):
+    imagelist = listing.get_image_list_for(imagename)
+    
+    for image_id in imagelist
+    if not image_exists(image_id):
+        imagelist.remove(image_id)
+
+    store.write_data("images", imagename, os.linesep.join(imagelist) )
