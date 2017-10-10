@@ -112,7 +112,7 @@ def start_new_container(imagename, doattach=False):
         runmode = "-it"
         useexec = True
 
-    code, sout, serr = run.call(["docker", "run", runmode, "--name=%s"%containername, "--restart", "on-failure"]+options+[imagename], useexec=useexec)
+    code, sout, serr = run.call(["docker", "run", runmode, "--name=%s"%containername, "--restart", "unless-stopped"]+options+[imagename], useexec=useexec)
 
     if code > 0 or not found_running_container(containername):
         common.fail("Could not create new container for %s, or could not start created container:\n%s"%(imagename, sout))
