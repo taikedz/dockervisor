@@ -2,6 +2,10 @@
 
 A tool to juggle Docker images and containers in your stead.
 
+Written to allow non-fluent admins to manage docker containers and image upgrades easily.
+
+Here's an [example readme](example-readme.md) that can be given to basic maintenance admins, for apps managed by jockler.
+
 ## Features
 
 * start/stop latest container using the image name - let jockler manage container instances
