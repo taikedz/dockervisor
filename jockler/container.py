@@ -68,21 +68,6 @@ def stop_containers(imagename):
         if code > 0:
             common.fail("Error stopping container(s) !\n%s"%(sout))
 
-def start_container(imagename, containername, doattach=False):
-    stop_containers(imagename)
-    store.write_data("last", imagename, containername)
-
-    runmode = []
-    if doattach:
-        runmode.append("-i")
-
-    print("Starting %s"%containername)
-
-    code, sout, serr = run.call( ["docker", "start", containername]+runmode, stdout=sys.stdout, stderr=sys.stderr )
-
-    if code > 0 or not found_running_container(containername):
-        common.fail("Could not start container %s - try 'docker start -a %s'\n%s"%(containername,containername,sout))
-
 def found_running_container(containername):
     time.sleep(1)
     code, sout, serr = run.call(["docker", "ps", "--format", "{{.Names}}", "--filter", "name=%s"%containername], silent=True)
@@ -99,16 +84,35 @@ def generate_container_name(imagename):
     datime = common.timestring()
     return "jcl_%s_%s" % (imagename, datime)
 
+def start_container(imagename, containername, doattach=False):
+    stop_containers(imagename)
+    store.write_data("last", imagename, containername)
+
+    runmode = []
+    useexec = False
+    if doattach:
+        runmode.append("-i")
+        useexec = True
+
+    print("Starting %s"%containername)
+
+    code, sout, serr = run.call( ["docker", "start", containername]+runmode, stdout=sys.stdout, stderr=sys.stderr, useexec=useexec )
+
+    if code > 0 or not found_running_container(containername):
+        common.fail("Could not start container %s - try starting with 'attach' mode'\n%s"%(containername,sout))
+
 def start_new_container(imagename, doattach=False):
     stop_containers(imagename)
     containername = generate_container_name(imagename)
     options = load_container_options(imagename)
 
     runmode = "-d"
+    useexec = False
     if doattach:
         runmode = "-it"
+        useexec = True
 
-    code, sout, serr = run.call(["docker", "run", runmode, "--name=%s"%containername, "--restart", "on-failure"]+options+[imagename])
+    code, sout, serr = run.call(["docker", "run", runmode, "--name=%s"%containername, "--restart", "on-failure"]+options+[imagename], useexec=useexec)
 
     if code > 0 or not found_running_container(containername):
         common.fail("Could not create new container for %s, or could not start created container:\n%s"%(imagename, sout))
