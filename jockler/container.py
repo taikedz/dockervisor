@@ -41,11 +41,19 @@ def start(args):
         common.fail("Unknown. Use 'jockler start {new|last|stable} IMAGE' or 'jockler start CONTAINER'")
 
 def stop(args):
-    if len(args) != 1:
+    if not common.args_check(args, 1):
         common.fail("Unknown sequence for stop: %s" % ' '.join(args))
 
     imagename = args[0]
-    stop_containers(imagename)
+    forcemode = False
+    if common.item(args, 1 , False) == "-f":
+        forcemode = True
+
+    if forcemode:
+        # imagename must in fact be container name
+        force_stop(imagename)
+    else:
+        stop_containers(imagename)
 
 def extract_image_name(containername):
     m = re.match("^(jcl|dcv)_([a-zA-Z0-9]+)_[0-9]+$", containername)
@@ -67,6 +75,13 @@ def stop_containers(imagename):
         code, sout, serr = run.call( ["docker", "stop"] + containernames )
         if code > 0:
             common.fail("Error stopping container(s) !\n%s"%(sout))
+
+def force_stop(containername):
+    res,sout,serr = run.call(["docker", "update", "--restart=no", containername])
+    if res > 0:
+        common.fail("Could not update restart policy on container [%s]"%containername)
+
+    res,sout,serr = run.call(["docker", "stop", containername])
 
 def found_running_container(containername):
     time.sleep(1)
