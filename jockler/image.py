@@ -1,4 +1,5 @@
 from jockler import store
+from jockler import options
 from jockler import common
 from jockler import run
 from jockler import dockerfile
@@ -8,12 +9,15 @@ import sys
 import json
 
 def build(args):
+    if not common.args_check(args, 1):
+        common.fail("Specify image name to build !")
+
     imagename = args[0]
 
     if not re.match("^[a-zA-Z0-9]+$", imagename):
         common.fail("Image name can only have letters a-z, A-Z and numbers 0-9.")
 
-    dockerfile, build_path = dockerfiles_for(imagename)
+    dockerfile, build_path = dockerfiles_for(imagename, args)
 
     # Add jcl file first - if cannot be generated, prevents build
     add_jcl(imagename, dockerfile)
@@ -26,15 +30,15 @@ def build(args):
 
     exit(res)
 
-def dockerfiles_for(imagename):
+def dockerfiles_for(imagename, args):
     dockerfile = "%s-Dockerfile"%imagename
     build_path = "%s-data"
 
     if not os.path.isfile(dockerfile):
-        dockerfile = "Dockerfile"
+        dockerfile = common.item(args, 1, "Dockerfile")
 
     if not os.path.isdir(build_path):
-        build_path = "."
+        build_path = common.item(args, 2, ".")
 
     return dockerfile, build_path
 
@@ -42,7 +46,7 @@ def add_jcl(imagename, cdockerfile):
     try:
         dockerfile.add_jcl_file(imagename, cdockerfile)
     except json.JSONDecodeError as e:
-        common.fail("Invalid jockler-%s file data:\n%s"%(imagename, str(e)))
+        common.fail("Invalid %s file data:\n%s"%(options.jcl_name(imagename), str(e)))
 
 def get_tagged_image_id(imagename):
     # This should perform an exact match

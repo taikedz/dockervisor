@@ -71,7 +71,7 @@ Run a container form an image, let jockler manage ports, volumes and specific co
 
 Build an image from a Dockerfile, and generate port and volume management configs
 
-    dockverisor build IMAGENAME DIRECTORY
+    dockverisor build IMAGENAME [DOCKERFILE [DIRECTORY]]
 
 Start and stop image containers
 
