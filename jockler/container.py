@@ -53,7 +53,7 @@ def extract_image_name(containername):
     common.fail("[%s] is not a container managed by jockler" % containername)
 
 def get_running_containers(imagename):
-    code, sout,serr = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=jcl_%s"%imagename], silent=True)
+    code, sout,serr = run.call(["docker","ps", "--format", "{{.Names}}", "--filter", "name=jcl_%s_"%imagename], silent=True)
 
     containernames = sout.strip().split("\n")
     common.remove_empty_strings(containernames)
