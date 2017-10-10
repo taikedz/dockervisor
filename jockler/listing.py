@@ -13,7 +13,7 @@ List images and containers
 
 List container instance name, or container runtime configuration
 
-    jockler list { last | stable | jcl } IMAGENMAE
+    jockler list { last | stable | jcl } IMAGENAME
 
 """
 
