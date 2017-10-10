@@ -25,7 +25,8 @@ This means that if you build a new version of an image, your new container will 
 
 Required:
 
-* Jockler is implemented in Python 3
+* Jockler requires Python 3.5
+	* For CentOS 7 you can find RPM packages of Python 3.5 at https://ius.io
 * You will need the latest docker-ce: see the [official docker documentation](https://www.docker.com/community-edition)
 
 Optional:

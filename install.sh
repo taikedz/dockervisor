@@ -45,7 +45,8 @@ if [[ -h "$JOCKLER_EXE" ]]; then
 fi
 
 echo "Installing new jockler ..."
-ln -s "$JOCKLER_DIR/runtime.py" "$JOCKLER_EXE"
+cp bin/jockler "$JOCKLER_EXE"
+chmod 755 "$JOCKLER_EXE"
 
 
 # ==========================================
