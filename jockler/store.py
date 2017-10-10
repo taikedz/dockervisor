@@ -19,8 +19,13 @@ a_store_dir = [homedir, "jockler-data"]
 if os.path.isdir("/var"):
     a_store_dir = ["/var/jockler"]
 
-def dump(path_array):
+def load(path_array):
     data = files.read_file(a_store_dir + path_array)
+    if data:
+        return data
+
+def dump(path_array):
+    data = load(path_array)
     if data:
         print(data)
     else:

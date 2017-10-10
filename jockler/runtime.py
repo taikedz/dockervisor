@@ -16,6 +16,7 @@ import removal
 import attach
 import volumes
 import startall
+import readme
 
 def main():
     if not common.args_check(sys.argv, 2):
@@ -57,7 +58,7 @@ def main():
         startall.start_all(sys.argv[2:])
 
     elif action == "readme":
-        store.dump(["readme.md"])
+        readme.dump(sys.argv[2:])
 
     else:
         printhelp()
