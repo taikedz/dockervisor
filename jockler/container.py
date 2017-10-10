@@ -8,22 +8,26 @@ import time
 import sys
 import os
 
-# jockler start {new|last|stable} IMAGE
+# jockler start {new|last|stable} IMAGE [ATTACH]
 
 def start(args):
-    if len(args) == 2:
+    if len(args) >= 2:
         instance = args[0]
         imagename = args[1]
+
+        doattach = common.item(args, 2, False)
+        if doattach == "attach":
+            doattach=True
 
         if not instance in ["new", "last", "stable"]:
             common.fail("Incorrect instance name. Please use 'new', 'last', or 'stable' ")
 
         if instance == "new":
-            containername = start_new_container(imagename)
+            containername = start_new_container(imagename, doattach)
         else:
             containername = store.read_data(instance, imagename)
             if containername:
-                start_container(imagename, containername)
+                start_container(imagename, containername, doattach)
             else:
                 common.fail("No instance %s for image %s"%(instance, imagename))
 
@@ -34,9 +38,6 @@ def start(args):
             start_container(imagename, containername)
     
     else:
-        # Do not try to implement specifying multiple names in one command
-        #   a shell scripter can do that with
-        #   for container in name1 name2 name3; do jockler start "$container"; done
         common.fail("Unknown. Use 'jockler start {new|last|stable} IMAGE' or 'jockler start CONTAINER'")
 
 def stop(args):
@@ -67,13 +68,17 @@ def stop_containers(imagename):
         if code > 0:
             common.fail("Error stopping container(s) !\n%s"%(sout))
 
-def start_container(imagename, containername):
+def start_container(imagename, containername, doattach=False):
     stop_containers(imagename)
     store.write_data("last", imagename, containername)
 
+    runmode = []
+    if doattach:
+        runmode.append("-i")
+
     print("Starting %s"%containername)
 
-    code, sout, serr = run.call( ["docker", "start", containername], stdout=sys.stdout, stderr=sys.stderr )
+    code, sout, serr = run.call( ["docker", "start", containername]+runmode, stdout=sys.stdout, stderr=sys.stderr )
 
     if code > 0 or not found_running_container(containername):
         common.fail("Could not start container %s - try 'docker start -a %s'\n%s"%(containername,containername,sout))
@@ -94,12 +99,16 @@ def generate_container_name(imagename):
     datime = common.timestring()
     return "jcl_%s_%s" % (imagename, datime)
 
-def start_new_container(imagename):
+def start_new_container(imagename, doattach=False):
     stop_containers(imagename)
     containername = generate_container_name(imagename)
     options = load_container_options(imagename)
 
-    code, sout, serr = run.call(["docker", "run", "-d", "--name=%s"%containername, "--restart", "on-failure"]+options+[imagename])
+    runmode = "-d"
+    if doattach:
+        runmode = "-it"
+
+    code, sout, serr = run.call(["docker", "run", runmode, "--name=%s"%containername, "--restart", "on-failure"]+options+[imagename])
 
     if code > 0 or not found_running_container(containername):
         common.fail("Could not create new container for %s, or could not start created container:\n%s"%(imagename, sout))

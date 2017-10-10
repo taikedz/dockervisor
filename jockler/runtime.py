@@ -79,7 +79,7 @@ Build an image from a Dockerfile, and generate port and volume management config
 
 Start and stop image containers
 
-    jockler start {new|stable|latest} IMAGENAME
+    jockler start {new|stable|latest} IMAGENAME [attach]
     jockler stop IMAGENAME
 
 Mark running container as stable

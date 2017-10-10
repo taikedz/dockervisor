@@ -92,7 +92,7 @@ Jockler stores its metadata on image and containers in `/var/jockler` on Linux, 
 Switch in to the folder with your Dockerfile, and use jockler to build a new image:
 
 	jockler build IMAGENAME [DOCKERFILE]
-	jockler start new IMAGENAME
+	jockler start new IMAGENAME [attach]
 
 By default, jockler will look for a `$IMAGENAME-Dockerfile` file in the current working directory. If this is not found, it will use the default `./Dockerfile`. Explicitly specifying a DOCKERFILE overrides this behaviour.
 
@@ -101,6 +101,8 @@ Jockler will also look for a `jockler-$IMAGENAME` file to register port mappings
 This builds a fresh image to be called `IMAGENAME`, and runs a container based off of it.
 
 You can subsequently run the `jockler` command from anywhere to stop/start a container if its image has already been built once.
+
+By default, jockler starts containers daemonized; by specifying `attached` the output will be written to TTY
 
 ### Stopping and starting the container
 
