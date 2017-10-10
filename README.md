@@ -175,13 +175,12 @@ This is only available on systems with systemd.
 You can create .TAR.GZ backup files of a `last` container of an image
 
 	jockler volumes backup linux IMAGENAME
-	jockler volumes restore linux IMAGENAME ARCHIVENAME
 
 You need to specify `linux` for Linux-based containers ; support for Windows-based containers will eventually be added.
 
 Before restoring, you need an equivalent image definition - if you are moving to another host, using the same dockerfile and optional remapping file, you can execute the following sequence:
 
-	jockler build IMAGENAME DIRECTORY
+	jockler build IMAGENAME [DOCKERFILE]
 	jockler volumes restore linux IMAGENAME ARCHIVENAME
 	jockler start new IMAGENAME
 
