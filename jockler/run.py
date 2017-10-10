@@ -10,7 +10,21 @@ Issues commands in the shell
 """
 
 
-def call(command_tokens, stdout=subprocess.PIPE, stderr=subprocess.PIPE, silent=False):
+def call(command_tokens, stdout=subprocess.PIPE, stderr=subprocess.PIPE, silent=False, useexec=False):
+    """ Run a comand (first token) with arguments
+
+    Returns a tuple of (code, stdout, stderr) representing the return code, and the output UTF-8 strings
+
+    stdout and stderr can be overridden with file descriptors to print to them instead
+
+    If silent is set to True, then the called command is not echoed back to stdout
+
+    If useexec is set to True, then the command is executed replacing the current process, effectively ending the python script.
+    """
+    if useexec:
+        # Replaces current process altogether
+        os.execvp(command_tokens[0], command_tokens)
+
     res,sout,serr = call_b(command_tokens, stdout, stderr, silent)
 
     if sout != None:
@@ -24,7 +38,7 @@ def call(command_tokens, stdout=subprocess.PIPE, stderr=subprocess.PIPE, silent=
 def call_b(command_tokens, stdout=subprocess.PIPE, stderr=subprocess.PIPE, silent=False):
     """ Runs a command (first token), and resumes python script
 
-    Returns a tuple of (stdout, stderr) output strings
+    Returns a tuple of (code, stdout, stderr) representing the return code, and the output binary "strings"
     """
     if not silent:
         print(' '.join(command_tokens))
