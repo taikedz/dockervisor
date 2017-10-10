@@ -82,6 +82,10 @@ Start and stop image containers
     jockler start {new|stable|latest} IMAGENAME [attach]
     jockler stop IMAGENAME
 
+Force stop containers that are constantly restarting:
+
+    jockler stop -f CONTAINERNAMES ...
+
 Mark running container as stable
 
     jockler stable IMAGENAME

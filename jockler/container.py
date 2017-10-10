@@ -46,12 +46,12 @@ def stop(args):
 
     imagename = args[0]
     forcemode = False
-    if common.item(args, 1 , False) == "-f":
+    if imagename == "-f" and common.item(args, 1, None) != None:
         forcemode = True
 
     if forcemode:
-        # imagename must in fact be container name
-        force_stop(imagename)
+        for containername in args[1:]:
+            force_stop(containername)
     else:
         stop_containers(imagename)
 
