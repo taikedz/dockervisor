@@ -1,4 +1,4 @@
-# Gitlab base image
+# MYAPP base image
 
 For ease of maintenance, we use [jockler](https://github.com/taikedz/jockler) instead of bare docker commands.
 
