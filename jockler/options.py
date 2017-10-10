@@ -1,6 +1,6 @@
-from jockler import common
-from jockler import store
-from jockler import files
+import common
+import store
+import files
 import os
 import json
 

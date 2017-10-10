@@ -1,7 +1,7 @@
-from jockler import run
-from jockler import common
-from jockler import listing
-from jockler import store
+import run
+import common
+import listing
+import store
 import sys
 
 # jockler remove IMAGENAME

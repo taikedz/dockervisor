@@ -1,8 +1,8 @@
-from jockler import store
-from jockler import options
-from jockler import common
-from jockler import run
-from jockler import dockerfile
+import store
+import options
+import common
+import run
+import dockerfile
 import os
 import re
 import sys

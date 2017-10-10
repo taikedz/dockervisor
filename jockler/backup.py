@@ -1,8 +1,8 @@
-from jockler import common
-from jockler import options
-from jockler import store
-from jockler import run
-from jockler import volumes
+import common
+import options
+import store
+import run
+import volumes
 import os
 import sys
 

@@ -1,6 +1,6 @@
-from jockler import store
-from jockler import common
-from jockler import container
+import store
+import common
+import container
 
 helpstr = '''
 

@@ -1,5 +1,5 @@
-from jockler import container
-from jockler import common
+import container
+import common
 import os
 
 def attach(args):

@@ -3,24 +3,19 @@
 # Allow runtime to be installed as an executable via symlink
 
 import sys
-import os
-
-heredir = os.path.dirname( os.path.realpath(__file__) )
-heredir = os.path.realpath( heredir +os.path.sep +"..")
-sys.path.append(heredir)
 
 # =======================
 
-from jockler import image
-from jockler import store
-from jockler import container
-from jockler import stability
-from jockler import common
-from jockler import listing
-from jockler import removal
-from jockler import attach
-from jockler import volumes
-from jockler import startall
+import image
+import store
+import container
+import stability
+import common
+import listing
+import removal
+import attach
+import volumes
+import startall
 
 def main():
     if not common.args_check(sys.argv, 2):

@@ -1,6 +1,6 @@
-from jockler import common
-from jockler import run
-from jockler import store
+import common
+import run
+import store
 from sys import stdout,stderr
 import os
 import re
