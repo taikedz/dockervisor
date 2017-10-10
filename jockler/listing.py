@@ -105,9 +105,20 @@ def get_image_list_for(imagename):
     return images
 
 def image_exists(imagename):
-    res, sout, serr = run.call(["docker", "images", "--format", "{{.Repository}}", imagename], silent=True)
+    # Searching by ID
+    res, sout, serr = run.call(["docker", "images", "--format", "{{.ID}}"], silent=True)
     images = sout.strip().split(os.linesep)
-    return imagename in images
+    if imagename in images:
+        return True
+    
+    # Search by name
+    res, sout, serr = run.call(["docker", "images", "--format", "{{.ID}}", imagename], silent=True)
+    images = sout.strip().split(os.linesep)
+    if len(images) > 0:
+        return True
+
+    return False
+
 
 def unknown_category(category):
     common.fail("Unkown category '%s'; use 'containers', 'running', 'images', or 'stable'")
