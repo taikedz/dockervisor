@@ -32,13 +32,11 @@ def build(args):
 
 def dockerfiles_for(imagename, args):
     dockerfile = "%s-Dockerfile"%imagename
-    build_path = "%s-data"
 
     if not os.path.isfile(dockerfile):
-        dockerfile = common.item(args, 1, "Dockerfile")
+        dockerfile = os.path.abspath( common.item(args, 1, "Dockerfile") )
 
-    if not os.path.isdir(build_path):
-        build_path = common.item(args, 2, ".")
+    build_path = os.path.abspath(os.path.join(dockerfile, os.pardir))
 
     return dockerfile, build_path
 
