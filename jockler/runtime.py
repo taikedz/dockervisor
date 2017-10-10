@@ -82,9 +82,9 @@ Mark running container as stable
 
     jockler stable IMAGENAME
 
-List containers of an image, associated images, and stable image.
+List containers of an image, associated images, instance containers, or jockler data.
 
-    jockler list {containers|running|images|stable} IMAGENAME
+    jockler list {containers|running|images|stable|last|jcl} {IMAGENAME|.all}
 
 Attach to the container of an image
 

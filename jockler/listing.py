@@ -5,11 +5,21 @@ from sys import stdout,stderr
 import os
 import re
 
-# jockler list IMAGE CATCATEGORYY
+helpstr = """
+
+List images and containers
+
+    jockler list { containers | running | images } {IMAGENAME | .all}
+
+List container instance name, or container runtime configuration
+
+    jockler list { last | stable | jcl } IMAGENMAE
+
+"""
 
 def listing(args):
     if not common.args_check(args, 2):
-        common.fail("Try 'jockler list {containers|running|images|last|stable}' IMAGENAME")
+        common.fail(helpstr)
 
     category = args[0]
     imagename = args[1]
@@ -48,6 +58,9 @@ def list_on_image(imagename, category):
 
     elif category == "last" or category == "stable":
         print(store.read_data(category, imagename))
+
+    elif category == "jcl":
+        print(store.read_data("jockler-%s"%imagename, imagename))
 
     else:
         unknown_category(category)
@@ -111,9 +124,6 @@ def list_all(category):
 
     elif category == "images":
         print_call(["docker", "images"])
-
-    elif category == "stable":
-        print("Please specify an image.")
 
     else:
         unknown_category(category)
