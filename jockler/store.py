@@ -1,5 +1,4 @@
 from jockler import listing
-from jockler import store
 import pathlib
 import os
 from jockler import files
@@ -66,7 +65,7 @@ def cleanup_images(imagename):
         if not listing.image_exists(image_id):
             imagelist.remove(image_id)
 
-    store.write_data("images", imagename, os.linesep.join(imagelist) )
+    write_data("images", imagename, os.linesep.join(imagelist) )
 
 def list_named_images():
     dirnames = os.listdir(os.path.sep.join(a_store_dir) )
