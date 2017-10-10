@@ -74,4 +74,9 @@ if [[ ! -d "$JOCKLER_DAT" ]]; then
 	chmod 775 "$JOCKLER_DAT"
 fi
 
+if [[ ! -f "$JOCKLER_DAT/readme.md" ]]; then
+	cp example-readme.md "$JOCKLER_DAT/readme.md"
+	chown :docker "$JOCKLER_DAT/readme.md"
+fi
+
 echo "---- Finished ----"

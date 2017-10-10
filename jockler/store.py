@@ -20,6 +20,13 @@ a_store_dir = [homedir, "jockler-data"]
 if os.path.isdir("/var"):
     a_store_dir = ["/var/jockler"]
 
+def dump(path_array):
+    data = files.read_file(a_store_dir + path_array)
+    if data:
+        print(data)
+    else:
+        print("No [%s]"% os.path.sep.join(path_array))
+
 def write_store_file(a_storefile, filedata):
     ''' Ensures the store exists and writes the image data
 

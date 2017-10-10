@@ -12,6 +12,7 @@ sys.path.append(heredir)
 # =======================
 
 from jockler import image
+from jockler import store
 from jockler import container
 from jockler import stability
 from jockler import common
@@ -59,6 +60,9 @@ def main():
 
     elif action == "start-all":
         startall.start_all(sys.argv[2:])
+
+    elif action == "readme":
+        store.dump(["readme.md"])
 
     else:
         printhelp()
