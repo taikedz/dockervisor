@@ -11,7 +11,7 @@ Here's an [example readme](example-readme.md) that can be given to basic mainten
 * start/stop latest container using the image name - let jockler manage container instances
 * mark a given container as "stable" - rollback to a "stable" version after running a new container, if needed
 * ensure every container for a given image uses the same data volumes
-* backup and restore volume data (Linux only for now) across hosts
+* backup and restore volume data (Linux only for now) to even move data between hosts
 * automatically clean out old, unused containers and images
 * automatically start select containers on machine boot-up (requires systemd)
 
