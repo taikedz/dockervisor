@@ -39,3 +39,11 @@ Restore the data:
 If after a while you find that you have a lot of images and containers lying around on disk, you can run a cleanup to remove all images and containers, except the stable container, the last-run container, and their respective images.
 
 	jockler cleanup MYAPP
+
+## Issues
+
+If a container can't start, it might get stuck in a "Restarting" loop
+
+Stop such containers:
+
+	jockler stop -f CONTAINERNAMES ...
