@@ -231,7 +231,7 @@ Ports get mapped out one-to-one by default - for example, if the Dockerfile spec
 
 ## Remapping
 
-A remapping overrides file can be specified to override the ports: add a `jockler-$IMAGENAME` to the current working directory, containing JSON data with the appropriate keys.
+A remapping overrides file can be specified to override the ports: add a `jockler-$IMAGENAME` to the current working directory, containing JSON data with the appropriate keys, and then run `jockler build IMAGENAME` again.
 
 Multiple keys can be used (once per key name) in the same overrides file.
 
