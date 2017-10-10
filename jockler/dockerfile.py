@@ -16,7 +16,7 @@ def add_jcl_file(imagename, dockerfile):
 
     if os.path.isfile(jclfile):
         # use local jcl file
-        jcl_data = files.read_file([dcvfile])
+        jcl_data = files.read_file([jclfile])
         jcl_data = json.dumps(json.loads(jcl_data), indent=2)
     else:
         # generate jcl file from dockerfile
