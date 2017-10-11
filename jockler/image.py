@@ -22,7 +22,7 @@ def build(args):
     # Add jcl file first - if cannot be generated, prevents build
     add_jcl(imagename, dockerfile)
 
-    res,sout,serr = do_build( imagename, dockerfile, build_path )
+    res,sout,serr = do_build( imagename, dockerfile, build_path , args[1:])
 
     if res == 0:
         image_id = get_tagged_image_id(imagename)
@@ -65,7 +65,7 @@ def append_image_id(imagename, image_id):
 
     store.write_data( "images", imagename, os.linesep.join(imagelist) )
 
-def do_build(imagename, dockerfile, build_path):
+def do_build(imagename, dockerfile, build_path, build_args=[]):
     print("Building [%s] at [%s] taking files from [%s]" % (imagename, os.path.realpath(dockerfile), build_path))
-    return run.call(["docker", "build", "-t", imagename, "-f", dockerfile, build_path] , stdout=sys.stdout, stderr=sys.stderr)
+    return run.call(["docker", "build", "-t", imagename, "-f", dockerfile] + build_args + [ build_path] , stdout=sys.stdout, stderr=sys.stderr)
 
