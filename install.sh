@@ -45,7 +45,7 @@ if [[ -h "$JOCKLER_EXE" ]]; then
 fi
 
 echo "Installing new jockler ..."
-cp bin/jockler "$JOCKLER_EXE"
+cp assets/bin/jockler "$JOCKLER_EXE"
 chmod 755 "$JOCKLER_EXE"
 
 
@@ -60,7 +60,7 @@ fi
 
 if [[ -d "$(dirname "$JOCKLER_SER")" ]]; then
 	echo "Installing new service file"
-	cp service/jockler.service "$JOCKLER_SER"
+	cp assets/service/jockler.service "$JOCKLER_SER"
 fi
 
 
@@ -75,6 +75,6 @@ if [[ ! -d "$JOCKLER_DAT" ]]; then
 	chmod 775 "$JOCKLER_DAT"
 fi
 
-cp -i example-readme.md "$JOCKLER_DAT/readme.md" && chown :docker "$JOCKLER_DAT/readme.md"
+cp -i assets/example-readme.md "$JOCKLER_DAT/readme.md" && chown :docker "$JOCKLER_DAT/readme.md"
 
 echo "---- Finished ----"
