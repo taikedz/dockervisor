@@ -2,10 +2,8 @@
 
 pypath=/usr/share/jockler/runtime.py
 
-if which python3.5 >/dev/null; then
-	python3.5 "$pypath" "$@"
-elif which python3 >/dev/null; then
-	python3 "$pypath" "$@"
+if which python3 >/dev/null; then
+	exec python3 "$pypath" "$@"
 else
-	echo "Python 3.5 is required"
+	echo "Python 3 is required"
 fi

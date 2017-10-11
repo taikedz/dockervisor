@@ -1,5 +1,4 @@
 import listing
-import pathlib
 import os
 import files
 
@@ -12,7 +11,7 @@ import files
 # * last - the last instance that was run
 
 # Support Windows
-homedir = str(pathlib.Path.home())
+homedir = os.path.expanduser("~")
 a_store_dir = [homedir, "jockler-data"]
 
 # Unix global path
