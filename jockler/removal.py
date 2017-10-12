@@ -20,8 +20,11 @@ def remove(args, keep_images=[], keep_containers=[]):
     for k in set(keep_images):
         try_remove(k, allimages)
 
-    if not confirm_removal(allcontainers, allimages):
+    if not confirm_removal(allcontainers, allimages, keep_containers, keep_images):
         common.fail("ABORTED")
+
+    # Remove the image tag
+    run.call(["docker","rmi", imagename])
 
     run.call(["docker", "rm"] + allcontainers, stdout=sys.stdout, silent=True)
 
@@ -53,10 +56,10 @@ def cleanup(args):
 
     remove([imagename], keep_images, keep_containers)
 
-def confirm_removal(allcontainers, allimages):
+def confirm_removal(allcontainers, allimages, keep_containers, keep_images):
     joiner = ",\n\t"
-    print("The following containers will be removed:\n\t%s\n\nThe following images will be removed:\n\t%s\n\n" % (
-        joiner.join(allcontainers), joiner.join(allimages)
+    print("\nKeeping:\n\t%s\n\nThe following containers will be removed:\n\t%s\n\nThe following images will be removed:\n\t%s\n" % (
+        ", ".join(keep_containers + keep_images), joiner.join(allcontainers), joiner.join(allimages)
     ))
 
     print("Are you sure? y/N> ", end='', flush=True)

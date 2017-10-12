@@ -114,6 +114,7 @@ def image_exists(imagename):
     # Search by name
     res, sout, serr = run.call(["docker", "images", "--format", "{{.ID}}", imagename], silent=True)
     images = sout.strip().split(os.linesep)
+    common.remove_empty_strings(images)
     if len(images) > 0:
         return True
 
