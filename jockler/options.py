@@ -12,21 +12,32 @@ def read_options(imagename):
 
     return options
 
-def extract_section(imagename, prefix, section):
+def json_data(imagename):
     string_data = read_options_file(imagename)
 
     if not string_data:
         return []
-    
-    jsondata = json.loads(string_data)
-    options = []
-    datakeys = jsondata.keys()
 
-    if section in datakeys:
-        options.extend( expand_as_parameters(prefix, jsondata[section]) )
+    return json.loads(string_data)
+
+def extract_container_side(imagename, section):
+    jsondata = json_data(imagename)
+    options = []
+
+    if section in jsondata.keys():
+        for k,v in jsondata[section]:
+            options.extend( v )
 
     return options
 
+def extract_section(imagename, prefix, section):
+    jsondata = json_data(imagename)
+    options = []
+
+    if section in jsondata.keys():
+        options.extend( expand_as_parameters(prefix, jsondata[section]) )
+
+    return options
 
 def read_options_file(imagename):
     jclfile = jcl_name(imagename)

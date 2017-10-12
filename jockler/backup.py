@@ -49,12 +49,16 @@ def do_volume_restore(imagename, systemname, archivefile, destination="."):
     archive_fullpath = os.path.sep.join([destination,archivefile])
 
     volumes_array = options.extract_section(imagename, "-v", "volumes")
+    volume_mountpoints = options.extract_container_side(imagename, "volumes")
 
     if not os.path.isfile( archive_fullpath ):
         common.fail("Could not find [%s]"%archive_fullpath)
     
     if systemname == "linux":
-        res, sout, serr = do_linux_volume_restore(volumes_array, destination, archivefile)
+        res, sout, serr = do_linux_clear_data(volumes_array, volume_mountpoints)
+        if res >= 0:
+            res, sout, serr = do_linux_volume_restore(volumes_array, destination, archivefile)
+
     elif systemname == "windows":
         #TODO - need a windows version
         common.fail("Not yet implemented")
@@ -64,7 +68,13 @@ def do_volume_restore(imagename, systemname, archivefile, destination="."):
     if res == 0:
         print("Restore complete from %s" % archivefile)
     else:
-        common.fail("Backup operation failed!")
+        common.fail("Restore operation failed!")
+
+
+def do_linux_clear_data(volumes_array, volume_mountpoints):
+    return run.call(["docker", "run", "--rm", ] + volumes_restore + [ lightos["linux"],
+        "rm", "-rf" ] + volume_mountpoints,
+        stdout=sys.stdout, stderr=sys.stderr)
 
 def do_linux_volume_restore(volumes_restore, destination, archivename):
     # Load into a basic container
