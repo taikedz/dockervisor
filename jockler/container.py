@@ -76,6 +76,8 @@ def stop_containers(imagename):
         if code > 0:
             common.fail("Error stopping container(s) !\n%s"%(sout))
 
+        code, sout, serr = run.call( ["docker", "update", "--restart=no"] + containernames )
+
 def force_stop(containername):
     res,sout,serr = run.call(["docker", "update", "--restart=no", containername])
     if res > 0:
@@ -116,6 +118,8 @@ def start_container(imagename, containername, doattach=False):
     if code > 0 or not found_running_container(containername):
         common.fail("Could not start container %s - try starting with 'attach' mode'\n%s"%(containername,sout))
 
+    code, sout, serr = run.call( ["docker", "update", "--restart=unless-stopped", containername])
+
 def start_new_container(imagename, doattach=False):
     stop_containers(imagename)
     containername = generate_container_name(imagename)
@@ -127,10 +131,15 @@ def start_new_container(imagename, doattach=False):
         runmode = "-it"
         useexec = True
 
-    code, sout, serr = run.call(["docker", "run", runmode, "--name=%s"%containername, "--restart", "unless-stopped"]+options+[imagename], useexec=useexec)
+    code, sout, serr = run.call(["docker", "run", runmode, "--name=%s"%containername]+options+[imagename], useexec=useexec)
 
     if code > 0 or not found_running_container(containername):
         common.fail("Could not create new container for %s, or could not start created container:\n%s"%(imagename, sout))
+
+    # Do not do this on initial docker-run - otherwise, if the entrypoint is faulty
+    #   you get continually restarting containers that are hard to stop
+    code, sout, serr = run.call( ["docker", "update", "--restart=unless-stopped", containername])
+
     store.write_data("last", imagename, containername)
 
     return containername
