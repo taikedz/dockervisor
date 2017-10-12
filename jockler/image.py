@@ -14,7 +14,7 @@ def build(args):
 
     imagename = args[0]
 
-    if not re.match("^[a-zA-Z0-9]+$", imagename):
+    if not re.match("^"+common.imagenamepat+"$", imagename):
         common.fail("Image name can only have letters a-z, A-Z and numbers 0-9.")
 
     dockerfile, build_path = dockerfiles_for(imagename, args)
