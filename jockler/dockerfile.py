@@ -16,9 +16,12 @@ def add_jcl_file(imagename, dockerfile):
 
     if os.path.isfile(jclfile):
         # use local jcl file
+        print("Using jockler definition from %s ..."%jclfile)
         jcl_data = files.read_file([jclfile])
+        # deserialize and re-serialize as syntax check
         jcl_data = json.dumps(json.loads(jcl_data), indent=2)
     else:
+        print("Generating jockler data from %s ..."%dockerfile)
         # generate jcl file from dockerfile
         jcl_data = extract_jcl_data(imagename, dockerfile)
 
