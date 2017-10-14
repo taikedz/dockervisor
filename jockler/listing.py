@@ -22,9 +22,9 @@ def listing(args):
         common.fail(helpstr)
 
     category = args[0]
-    imagename = args[1]
+    imagename = common.item(args, 1)
 
-    if imagename == ".all":
+    if imagename == ".all" or imagename == None:
         list_all(category)
     else:
         list_on_image(imagename, category)
