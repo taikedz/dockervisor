@@ -15,7 +15,6 @@ import listing
 import removal
 import attach
 import volumes
-import startall
 import readme
 
 def main():
@@ -50,12 +49,6 @@ def main():
 
     elif action == "volumes":
         volumes.volumes(sys.argv[2:])
-
-    elif action == "autostart":
-        startall.autostart(sys.argv[2:])
-
-    elif action == "start-all":
-        startall.start_all(sys.argv[2:])
 
     elif action == "readme":
         readme.dump(sys.argv[2:])
@@ -111,15 +104,6 @@ Remove all containers and images associated with this image name, except for con
 Remove all data associated with this image !
 
     jockler remove IMAGENAME
-
-Mark an image for automatic starting; use 'none' to turn off autostart
-
-    jockler autostart IMAGENAME {last|stable|none}
-    jockler autostart :status
-
-Start all images marked for autostart:
-
-    jockler start-all
 
     """)
 

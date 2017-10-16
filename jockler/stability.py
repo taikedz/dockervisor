@@ -33,6 +33,7 @@ def mark_stable_container(imagename):
     containername = containernames[0]
 
     store.write_data("stable", imagename, containername)
+    print("Marked %s as stable. Start it again using 'jockler start stable %s'"%(containername, imagename))
 
 def stable(args):
 

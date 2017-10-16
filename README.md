@@ -38,11 +38,6 @@ Install the Jockler tool:
 	git clone https://github.com/taikedz/jockler
 	sudo jockler/install.sh
 
-	# Optionally, enable autostart
-	sudo systemctl enable jockler-autostart
-
-If your system does not use systemd, you will need to write your own init script to call `jockler start-all` on system startup
-
 ## Quickstart
 
 In a directory with a Dockerfile, build the image, and register its port exposures and volume mounts to the jockler store. If the image already existed, it is replaced with a newer version.
@@ -150,27 +145,13 @@ Run your stable version - this will also stop any currently running version.
 
 	jockler start stable IMAGENAME
 
-### Auto-start
+### Auto starting
 
-Jockler can mark images for automatic starting:
+The docker daemon restarts containers with a restart policy.
 
-	jockler autostart IMAGENAME {last|stable|none}
+Jockler turns off the restart policy on containers its stops, and adds `unless-stopped` policy to containers it starts.
 
-If not set, or set to none, the image's container will not be started
-
-To see the current status of all images
-
-	jockler autostart :status
-
-To run all containers marked for autostart, run
-
-	jockler start-all
-
-To have this run at host startup, run
-
-	systemctl enable jockler-autostart
-
-This is only available on systems with systemd.
+If you `jockler start new` on an image, its old container is stopped in this way, and the new one is started thus. If the new container fails to start, you must manually start your `last` container to bring it back to an aut-restarting mode.
 
 ### Backup and restore
 

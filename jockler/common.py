@@ -1,6 +1,8 @@
 import sys
 import time
 
+imagenamepat = "[a-zA-z0-9-]+"
+
 def timestring(fmtstring="%Y%m%d%H%M%S"):
     return time.strftime(fmtstring)
 
